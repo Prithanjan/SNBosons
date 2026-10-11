@@ -48,13 +48,23 @@ The system is paired with a strict classical control baseline and double-blind l
 
 ---
 
-## 4. Key Performance Indicators (KPIs)
+| Metric | Target | Verification Method | Status (Session Run) |
+|---|---|---|---|
+| Single-note round trip fidelity | $100\%$ ($1920/1920$) | Automated unit tests | Verified (0 failures / 1920) |
+| Random melody round trip fidelity | $100\%$ ($50/50$) | Automated integration test | Verified (50 / 50 exact) |
+| Twinkle melody round trip fidelity | $100\%$ ($42/42$) | Automated integration test | Verified (42 / 42 exact) |
+| Ode to Joy round trip fidelity | $100\%$ ($16/16$) | Automated integration test | Verified (16 / 16 exact) |
+| CHSH Parameter $S$ (theory) | $2.8284$ | Exact statevector | Verified ($2.8284$) |
+| CHSH Parameter $S$ (empirical) | $2.828 \pm 0.05$ | Shot measurement ($N=20,000$, seed 2026) | Verified ($S = 2.8306$) |
+| Dissonant tritone occurrences | $0$ across 100 seeds | Consonance validator | Verified ($0$ tritones, 100 seeds) |
+| Audio RMS match error | $< 0.5\%$ | Dual WAV RMS analysis | Verified ($0.00\%$ diff) |
+| Peak audio amplitude | $< 1.0$ | Audio peak detector | Verified ($0.952$ Twinkle, $0.843$ Ode to Joy) |
+| IonQ/Qollab Circuit Validity | Valid OpenQASM / Qiskit Circuit | Static circuit analyzer | Verified (QASM 2.0 / Qiskit ready) |
 
-| Metric | Target | Verification Method |
-|---|---|---|
-| Single-note round trip fidelity | $100\%$ ($1920/1920$) | Automated unit tests |
-| Random melody round trip fidelity | $100\%$ ($50/50$) | Automated integration test |
-| CHSH Parameter $S$ | $2.828 \pm 0.05$ | Shot measurement statistics |
-| Dissonant tritone occurrences | $0$ across 100 seeds | Consonance validator |
-| Audio RMS match error | $< 0.5\%$ | Dual WAV RMS analysis |
-| IonQ/Qollab Circuit Validity | Valid OpenQASM / Qiskit Circuit | Static circuit analyzer |
+---
+
+## 5. Explicit Verification Boundaries
+
+- **Verified in this session:** Superposition, basis-state encoding/decoding exactness, Bell-pair entanglement, CHSH Bell inequality violation ($S = 2.8306$, classical limit $2.0$), consonant interval bounds $\{3, 4, 7, 8, 9\}$ semitones, and acoustic RMS calibration ($<0.5\%$ error).
+- **Not verified:** Audible quantum advantage, quantum speed-up, or that the music is "better". Human listening test results remain pending.
+
