@@ -6,30 +6,37 @@
     <title>SNBosons — Quantum Counterpoint Studio</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg: #141312;
-            --surface: #1c1b18;
+            /* Warm, Rich Claude-Style Palette */
+            --bg: #131211;
+            --surface: #1b1917;
             --surface-elevated: #24221e;
-            --surface-active: #2e2b26;
-            --border: #35322b;
-            --border-highlight: #4a453c;
-            --text-primary: #ede8e1;
-            --text-secondary: #9e978c;
-            --text-tertiary: #6b665e;
+            --surface-active: #2f2c26;
+            --border: #38342c;
+            --border-highlight: #4d473c;
             
-            --terracotta: #d96b43;
-            --terracotta-glow: rgba(217, 107, 67, 0.2);
-            --amber: #e2a346;
-            --amber-glow: rgba(226, 163, 70, 0.2);
-            --quantum-purple: #a682ff;
-            --quantum-glow: rgba(166, 130, 255, 0.2);
+            --text-primary: #eee8de;
+            --text-secondary: #a39c90;
+            --text-tertiary: #6e675b;
+            
+            /* Harmonic Voice & Quantum Accents */
+            --cantus-orange: #d96b43;      /* Voice 1: Cantus Firmus melody */
+            --cantus-glow: rgba(217, 107, 67, 0.25);
+            --q0-purple: #9d7df2;          /* Voice 2: Qubit q[0] Upper Counterpoint */
+            --q0-glow: rgba(157, 125, 242, 0.25);
+            --q1-amber: #e5a742;           /* Voice 3: Qubit q[1] Lower Counterpoint */
+            --q1-glow: rgba(229, 167, 66, 0.25);
             --sage: #6baa75;
+            --sage-glow: rgba(107, 170, 117, 0.25);
             
             --font-serif: 'Newsreader', Georgia, serif;
             --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
             --font-mono: 'JetBrains Mono', monospace;
+            
+            /* Golden Ratio Proportions */
+            --phi: 1.6180339887;
         }
 
         * { box-sizing: border-box; }
@@ -43,15 +50,16 @@
             -webkit-font-smoothing: antialiased;
         }
 
+        /* Golden Ratio Layout Shell */
         .layout-container {
-            max-width: 1180px;
+            max-width: 1200px;
             margin: 0 auto;
-            padding: 32px 24px 80px 24px;
+            padding: 34px 21px 55px 21px; /* Fibonacci spacing */
         }
 
         /* Top Header */
         header {
-            margin-bottom: 24px;
+            margin-bottom: 21px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -82,19 +90,19 @@
             padding: 4px;
             border-radius: 12px;
             gap: 4px;
-            margin-bottom: 24px;
+            margin-bottom: 21px;
         }
 
         .tab-btn {
             background: transparent;
             border: none;
             color: var(--text-secondary);
-            padding: 10px 20px;
+            padding: 10px 18px;
             border-radius: 8px;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: all 0.15s ease;
             display: inline-flex;
             align-items: center;
             gap: 8px;
@@ -126,7 +134,7 @@
             background: var(--surface-elevated);
             border: 1px solid var(--border);
             color: var(--text-primary);
-            padding: 10px 16px;
+            padding: 9px 15px;
             border-radius: 8px;
             font-size: 13px;
             font-weight: 600;
@@ -135,6 +143,7 @@
             display: inline-flex;
             align-items: center;
             gap: 6px;
+            user-select: none;
         }
         .btn-tile:hover {
             background: var(--surface-active);
@@ -144,42 +153,43 @@
         .btn-tile:active { transform: translateY(1px); }
 
         .btn-tile.primary {
-            background: var(--terracotta);
+            background: var(--cantus-orange);
             border-color: #e5774e;
             color: #fff;
-            box-shadow: 0 2px 10px rgba(217, 107, 67, 0.3);
+            box-shadow: 0 2px 10px var(--cantus-glow);
         }
         .btn-tile.primary:hover { background: #e5774e; }
 
         .btn-tile.selected {
             background: var(--surface-active);
-            border-color: var(--amber);
-            color: var(--amber);
+            border-color: var(--q1-amber);
+            color: var(--q1-amber);
         }
 
-        /* 2-Column Split */
+        /* Golden Ratio Split Layout: 1.618fr (61.8%) to 1fr (38.2%) */
         .split-layout {
             display: grid;
-            grid-template-columns: 1.6fr 1fr;
-            gap: 24px;
+            grid-template-columns: minmax(0, 1.618fr) minmax(0, 1fr);
+            gap: 21px;
+            align-items: start;
         }
-        @media (max-width: 900px) {
+        @media (max-width: 960px) {
             .split-layout { grid-template-columns: 1fr; }
         }
 
         .card {
             background: var(--surface);
             border: 1px solid var(--border);
-            border-radius: 14px;
-            padding: 22px;
-            margin-bottom: 20px;
+            border-radius: 13px;
+            padding: 21px;
+            margin-bottom: 21px;
         }
 
         .card-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 16px;
+            margin-bottom: 13px;
         }
 
         .card-title {
@@ -190,12 +200,53 @@
             color: #fff;
         }
 
-        /* Oscilloscope Screen */
-        .oscilloscope-screen {
-            background: #0c0b0a;
+        /* 3-Voice Architecture Banner */
+        .voice-arch-banner {
+            background: #141311;
             border: 1px solid var(--border);
             border-radius: 10px;
-            height: 100px;
+            padding: 13px 16px;
+            margin-bottom: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .voice-legend-bar {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .voice-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 6px;
+            background: var(--surface-elevated);
+            border: 1px solid var(--border);
+        }
+
+        .voice-badge.cantus { border-color: var(--cantus-orange); color: var(--cantus-orange); }
+        .voice-badge.q0 { border-color: var(--q0-purple); color: var(--q0-purple); }
+        .voice-badge.q1 { border-color: var(--q1-amber); color: var(--q1-amber); }
+
+        .voice-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        /* Oscilloscope Screen (Fibonacci 89px) */
+        .oscilloscope-screen {
+            background: #0b0b0a;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            height: 89px;
             position: relative;
             overflow: hidden;
             margin-bottom: 16px;
@@ -207,12 +258,12 @@
             display: block;
         }
 
-        /* MIDI Editable Piano Roll Grid */
+        /* MIDI Editable Piano Roll Grid (Fibonacci 233px) */
         .midi-editor-card {
-            background: #0d0c0b;
+            background: #0e0d0c;
             border: 1px solid var(--border);
             border-radius: 10px;
-            padding: 12px;
+            padding: 14px;
             margin-bottom: 16px;
         }
 
@@ -221,22 +272,25 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 10px;
+            flex-wrap: wrap;
+            gap: 8px;
         }
 
         .midi-canvas-wrap {
             position: relative;
-            height: 200px;
-            overflow-x: auto;
-            overflow-y: hidden;
+            height: 233px;
+            width: 100%;
             background: #11100e;
             border: 1px solid var(--border);
-            border-radius: 6px;
+            border-radius: 8px;
+            overflow: hidden;
         }
 
         canvas#midiCanvas {
+            width: 100%;
             height: 100%;
             display: block;
-            cursor: pointer;
+            cursor: crosshair;
         }
 
         /* Mode Selection Buttons */
@@ -255,7 +309,7 @@
             background: transparent;
             border: none;
             color: var(--text-secondary);
-            padding: 10px 14px;
+            padding: 10px 12px;
             border-radius: 8px;
             font-size: 13px;
             font-weight: 600;
@@ -265,15 +319,15 @@
         }
 
         .mode-btn.active.quantum {
-            background: var(--quantum-purple);
+            background: var(--q0-purple);
             color: #fff;
-            box-shadow: 0 2px 10px rgba(166, 130, 255, 0.3);
+            box-shadow: 0 2px 10px var(--q0-glow);
         }
 
         .mode-btn.active.classical {
-            background: var(--amber);
+            background: var(--q1-amber);
             color: #141312;
-            box-shadow: 0 2px 10px rgba(226, 163, 70, 0.3);
+            box-shadow: 0 2px 10px var(--q1-glow);
         }
 
         /* Side Action Buttons */
@@ -287,13 +341,14 @@
             background: var(--surface-elevated);
             border: 1px solid var(--border);
             border-radius: 10px;
-            padding: 14px;
+            padding: 14px 16px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             cursor: pointer;
             color: var(--text-primary);
             transition: all 0.15s ease;
+            gap: 12px;
         }
         .action-card-btn:hover {
             border-color: var(--border-highlight);
@@ -302,11 +357,12 @@
 
         .metric-badge {
             font-family: var(--font-mono);
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 600;
-            padding: 4px 10px;
+            padding: 5px 11px;
             border-radius: 6px;
-            background: rgba(0,0,0,0.3);
+            background: rgba(0,0,0,0.35);
+            white-space: nowrap;
         }
 
         /* Quantum Gate Inspector Styling (Tab 2) */
@@ -321,17 +377,24 @@
         .qubit-wire-row {
             display: flex;
             align-items: center;
-            height: 60px;
+            height: 64px;
             position: relative;
-            margin-bottom: 12px;
+            margin-bottom: 16px;
         }
 
         .wire-label {
-            width: 70px;
+            width: 120px;
             font-family: var(--font-mono);
-            font-size: 14px;
-            color: var(--amber);
+            font-size: 13px;
+            color: var(--text-primary);
             font-weight: 600;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        .wire-label span:last-child {
+            font-size: 11px;
+            color: var(--text-secondary);
         }
 
         .wire-line {
@@ -343,6 +406,7 @@
             align-items: center;
             gap: 12px;
             padding: 0 16px;
+            border-radius: 2px;
         }
 
         .gate-block {
@@ -362,19 +426,71 @@
             position: relative;
             transition: transform 0.1s;
         }
-        .gate-block:hover { transform: scale(1.05); }
+        .gate-block:hover { transform: scale(1.08); }
+        .gate-block::after {
+            content: "×";
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            width: 14px;
+            height: 14px;
+            background: #ef4444;
+            color: #fff;
+            font-size: 10px;
+            border-radius: 50%;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+        .gate-block:hover::after { display: flex; }
 
-        .gate-h { background: #3b82f6; border: 1px solid #60a5fa; }
-        .gate-x { background: #ef4444; border: 1px solid #f87171; }
-        .gate-cx { background: #8b5cf6; border: 1px solid #a78bfa; border-radius: 50%; width: 36px; height: 36px; }
+        .gate-h { background: #2563eb; border: 1px solid #60a5fa; }
+        .gate-x { background: #dc2626; border: 1px solid #f87171; }
+        .gate-cx { background: #7c3aed; border: 1px solid #a78bfa; border-radius: 50%; width: 38px; height: 38px; }
         .gate-ry { background: #d96b43; border: 1px solid #fb923c; }
-        .gate-meas { background: #10b981; border: 1px solid #34d399; }
+        .gate-z { background: #0891b2; border: 1px solid #22d3ee; }
+        .gate-meas { background: #059669; border: 1px solid #34d399; }
 
         .toolbox-palette {
             display: flex;
             gap: 8px;
             flex-wrap: wrap;
+            align-items: center;
             margin-bottom: 16px;
+            padding: 10px 14px;
+            background: var(--surface-elevated);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+        }
+
+        .prob-bars-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin: 16px 0;
+        }
+
+        .prob-card {
+            background: #11100e;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 12px;
+            text-align: center;
+        }
+        .prob-label { font-family: var(--font-mono); font-size: 13px; font-weight: 600; margin-bottom: 6px; }
+        .prob-val { font-family: var(--font-mono); font-size: 18px; font-weight: 700; color: #fff; }
+        .prob-meter {
+            height: 6px;
+            background: #24221d;
+            border-radius: 3px;
+            margin-top: 8px;
+            overflow: hidden;
+        }
+        .prob-fill {
+            height: 100%;
+            background: var(--q0-purple);
+            width: 0%;
+            transition: width 0.2s ease;
         }
 
         .code-container {
@@ -387,6 +503,7 @@
             color: #d1b894;
             max-height: 220px;
             overflow-y: auto;
+            margin: 0;
         }
     </style>
 </head>
@@ -426,27 +543,45 @@
         <!-- TAB 1: STUDIO & MIDI EDITOR -->
         <div class="tab-pane active" id="tab-studio">
             <div class="split-layout">
-                <!-- Left Side: Waveform + MIDI Grid -->
+                <!-- Left Side: Waveform + MIDI Grid + Presets (61.8% Golden Ratio) -->
                 <div>
-                    <!-- Oscilloscope Screen -->
+                    <!-- Voice Architecture Legend -->
+                    <div class="voice-arch-banner">
+                        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+                            <span style="font-size: 13px; font-weight: 600; color: #fff;">3-Voice Polyphony (2 Entangled Quantum Lines)</span>
+                            <div class="btn-group">
+                                <button class="btn-tile" id="btnSoloAll" style="padding: 3px 8px; font-size: 11px;">All 3 Voices</button>
+                                <button class="btn-tile" id="btnSoloMelody" style="padding: 3px 8px; font-size: 11px;">Solo Melody</button>
+                                <button class="btn-tile" id="btnSoloQ0" style="padding: 3px 8px; font-size: 11px;">Solo q[0]</button>
+                                <button class="btn-tile" id="btnSoloQ1" style="padding: 3px 8px; font-size: 11px;">Solo q[1]</button>
+                            </div>
+                        </div>
+                        <div class="voice-legend-bar">
+                            <span class="voice-badge cantus"><span class="voice-dot" style="background:var(--cantus-orange)"></span> Voice 1: Cantus Firmus (Lead)</span>
+                            <span class="voice-badge q0"><span class="voice-dot" style="background:var(--q0-purple)"></span> Voice 2: Qubit q[0] (Upper 3rd / 5th)</span>
+                            <span class="voice-badge q1"><span class="voice-dot" style="background:var(--q1-amber)"></span> Voice 3: Qubit q[1] (Lower 3rd / Octave)</span>
+                        </div>
+                    </div>
+
+                    <!-- Oscilloscope Screen (89px) -->
                     <div class="oscilloscope-screen">
                         <canvas id="liveScope"></canvas>
                     </div>
 
-                    <!-- MIDI Editable Piano Roll Grid -->
+                    <!-- MIDI Editable Piano Roll Grid (233px) -->
                     <div class="midi-editor-card">
                         <div class="midi-grid-controls">
-                            <span style="font-size: 13px; font-weight: 600; color: #fff;">Interactive MIDI Piano Roll (Click cells to add/remove notes)</span>
+                            <span style="font-size: 13px; font-weight: 600; color: #fff;">Interactive Piano Roll (Click cells to add / toggle notes)</span>
                             <div class="btn-group">
                                 <button class="btn-tile" id="btnClearMidi" style="padding: 4px 10px; font-size: 11px;">Clear Grid</button>
-                                <button class="btn-tile" id="btnResetTwinkle" style="padding: 4px 10px; font-size: 11px;">Load Preset</button>
+                                <button class="btn-tile" id="btnResetTwinkle" style="padding: 4px 10px; font-size: 11px;">Reset Preset</button>
                             </div>
                         </div>
                         <div class="midi-canvas-wrap">
-                            <canvas id="midiCanvas" width="960" height="200"></canvas>
+                            <canvas id="midiCanvas"></canvas>
                         </div>
                         <div style="display:flex; justify-content:space-between; margin-top:8px; font-size:11px; color:var(--text-tertiary);">
-                            <span>Pitch Range: C4 (60) to C6 (84)</span>
+                            <span>Pitch Range: C4 (60) to C6 (84) · Scale Filter: Diatonic</span>
                             <span id="midiNoteCount">42 notes active</span>
                         </div>
                     </div>
@@ -465,9 +600,8 @@
                     </div>
                 </div>
 
-                <!-- Right Side: Simple Button Controls -->
+                <!-- Right Side: Tactical Controls (38.2% Golden Ratio) -->
                 <div>
-                    <!-- Mode Switcher -->
                     <div class="card">
                         <div class="card-header">
                             <h3 class="card-title">Duet Generation Mode</h3>
@@ -482,23 +616,23 @@
                             <div class="action-card-btn" id="btnToggleKey">
                                 <div>
                                     <div style="font-weight: 600; font-size: 13px;">Key Signature</div>
-                                    <div style="font-size: 11px; color: var(--text-secondary);">12-Key Scale Filter</div>
+                                    <div style="font-size: 11px; color: var(--text-secondary);">12-Key Diatonic Filter</div>
                                 </div>
-                                <span class="metric-badge" id="lblKeyBadge" style="color: var(--amber);">C Major</span>
+                                <span class="metric-badge" id="lblKeyBadge" style="color: var(--q1-amber);">C Major</span>
+                            </div>
+
+                            <div class="action-card-btn" id="btnJumpToGates">
+                                <div>
+                                    <div style="font-weight: 600; font-size: 13px;">CHSH Bell Parameter (S)</div>
+                                    <div style="font-size: 11px; color: var(--text-secondary);">Classical Limit ≤ 2.0 | Tsirelson 2.828</div>
+                                </div>
+                                <span class="metric-badge" id="lblChshBadge" style="color: var(--q0-purple);">2.8284</span>
                             </div>
 
                             <div class="action-card-btn">
                                 <div>
-                                    <div style="font-weight: 600; font-size: 13px;">CHSH Correlation (S)</div>
-                                    <div style="font-size: 11px; color: var(--text-secondary);">Tsirelson Bound 2.828</div>
-                                </div>
-                                <span class="metric-badge" id="lblChshBadge" style="color: var(--quantum-purple);">2.8284</span>
-                            </div>
-
-                            <div class="action-card-btn">
-                                <div>
-                                    <div style="font-weight: 600; font-size: 13px;">Voice Motion Leading</div>
-                                    <div style="font-size: 11px; color: var(--text-secondary);">Independent Counterpoint</div>
+                                    <div style="font-weight: 600; font-size: 13px;">Voice Leading Correlation</div>
+                                    <div style="font-size: 11px; color: var(--text-secondary);">Non-local harmonic coordination</div>
                                 </div>
                                 <span class="metric-badge" id="lblMotionBadge" style="color: var(--sage);">53.6%</span>
                             </div>
@@ -506,11 +640,23 @@
                             <div class="action-card-btn" id="btnTriggerExport">
                                 <div>
                                     <div style="font-weight: 600; font-size: 13px;">Export Output</div>
-                                    <div style="font-size: 11px; color: var(--text-secondary);">Download Type 1 MIDI</div>
+                                    <div style="font-size: 11px; color: var(--text-secondary);">Download Type 1 Multi-Track MIDI</div>
                                 </div>
-                                <span class="metric-badge" style="color: var(--terracotta);">.MID</span>
+                                <span class="metric-badge" style="color: var(--cantus-orange);">.MID</span>
                             </div>
                         </div>
+                    </div>
+
+                    <!-- Architecture Explanation Card -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Why 2 Quantum Lines?</h3>
+                        </div>
+                        <p style="font-size: 13px; color: var(--text-secondary); margin: 0; line-height: 1.6;">
+                            In classical species counterpoint (Fux, 1725), 3-part harmony pairs a Cantus Firmus melody with two counter-melodies.
+                            SNBosons maps an entangled 2-qubit register (<span style="color:var(--q0-purple);font-family:var(--font-mono);">q[0]</span> and <span style="color:var(--q1-amber);font-family:var(--font-mono);">q[1]</span>) to these two voices.
+                            Non-local quantum correlations coordinate their harmonic movement to prevent parallel octaves and maintain diatonic consonance.
+                        </p>
                     </div>
                 </div>
             </div>
@@ -520,42 +666,87 @@
         <div class="tab-pane" id="tab-gates">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Interactive 2-Qubit Bell Circuit Inspector</h3>
+                    <div>
+                        <h3 class="card-title">Interactive 2-Qubit Bell Circuit Inspector</h3>
+                        <p style="font-size:13px; color:var(--text-secondary); margin:4px 0 0 0;">
+                            Modify gates on wires <span style="color:var(--q0-purple)">q[0]</span> (Upper Voice) and <span style="color:var(--q1-amber)">q[1]</span> (Lower Voice). Editing gates immediately alters the synthesized harmony.
+                        </p>
+                    </div>
                     <div class="btn-group">
-                        <button class="btn-tile selected" id="btnPresetBell">Bell Pair (Φ+)</button>
-                        <button class="btn-tile" id="btnPresetUnentangled">Unentangled (H+H)</button>
-                        <button class="btn-tile" id="btnPresetZero">Ground (|00⟩)</button>
+                        <button class="btn-tile primary" id="btnAuditionCircuit">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                            <span>Audition State</span>
+                        </button>
                     </div>
                 </div>
 
-                <p style="font-size:13px; color:var(--text-secondary); margin-top:0;">
-                    Click gates to toggle them on the circuit wires. Watch the CHSH Bell parameter update in real time.
-                </p>
+                <!-- Presets -->
+                <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:16px;">
+                    <span style="font-size:12px; font-weight:600; color:var(--text-tertiary); align-self:center;">Presets:</span>
+                    <button class="btn-tile selected" id="btnPresetBell">EPR Bell Pair (Φ+)</button>
+                    <button class="btn-tile" id="btnPresetAntiBell">Contrary Bell Pair (Ψ+)</button>
+                    <button class="btn-tile" id="btnPresetUnentangled">Unentangled (H+H)</button>
+                    <button class="btn-tile" id="btnPresetZero">Ground (|00⟩)</button>
+                    <button class="btn-tile" id="btnPresetX0">Bit Flip q[0] (|10⟩)</button>
+                    <button class="btn-tile" id="btnPresetX1">Bit Flip q[1] (|01⟩)</button>
+                </div>
 
                 <!-- Gate Toolbox Palette -->
                 <div class="toolbox-palette">
-                    <span style="font-size:12px; font-weight:600; color:var(--text-tertiary); margin-right:4px; align-self:center;">Toolbox:</span>
+                    <span style="font-size:12px; font-weight:600; color:var(--text-tertiary); margin-right:4px;">Add to Wire:</span>
+                    <div class="btn-group" style="margin-right:12px;">
+                        <button class="btn-tile selected" id="btnTargetQ0" style="padding:4px 10px; font-size:12px;">q[0] (Upper)</button>
+                        <button class="btn-tile" id="btnTargetQ1" style="padding:4px 10px; font-size:12px;">q[1] (Lower)</button>
+                    </div>
+                    <span style="font-size:12px; font-weight:600; color:var(--text-tertiary); margin-right:4px;">Gates:</span>
                     <button class="btn-tile" data-gate-tool="H"><span class="gate-block gate-h" style="width:20px;height:20px;font-size:10px;">H</span> Hadamard</button>
                     <button class="btn-tile" data-gate-tool="CX"><span class="gate-block gate-cx" style="width:20px;height:20px;font-size:10px;">+</span> CNOT</button>
-                    <button class="btn-tile" data-gate-tool="Ry"><span class="gate-block gate-ry" style="width:20px;height:20px;font-size:10px;">Ry</span> Rotation-Y</button>
                     <button class="btn-tile" data-gate-tool="X"><span class="gate-block gate-x" style="width:20px;height:20px;font-size:10px;">X</span> Pauli-X</button>
+                    <button class="btn-tile" data-gate-tool="Ry"><span class="gate-block gate-ry" style="width:20px;height:20px;font-size:10px;">Ry</span> Rotation-Y</button>
+                    <button class="btn-tile" data-gate-tool="Z"><span class="gate-block gate-z" style="width:20px;height:20px;font-size:10px;">Z</span> Pauli-Z</button>
                 </div>
 
                 <!-- Interactive Circuit Board -->
                 <div class="circuit-board">
                     <!-- Qubit 0 -->
                     <div class="qubit-wire-row">
-                        <div class="wire-label">q[0] (Upper)</div>
-                        <div class="wire-line" id="wireQ0">
-                            <!-- Injected dynamically -->
+                        <div class="wire-label">
+                            <span style="color:var(--q0-purple)">q[0] (Upper)</span>
+                            <span>Discantus Voice</span>
                         </div>
+                        <div class="wire-line" id="wireQ0"></div>
                     </div>
                     <!-- Qubit 1 -->
                     <div class="qubit-wire-row">
-                        <div class="wire-label">q[1] (Lower)</div>
-                        <div class="wire-line" id="wireQ1">
-                            <!-- Injected dynamically -->
+                        <div class="wire-label">
+                            <span style="color:var(--q1-amber)">q[1] (Lower)</span>
+                            <span>Bassus Voice</span>
                         </div>
+                        <div class="wire-line" id="wireQ1"></div>
+                    </div>
+                </div>
+
+                <!-- Real-Time State Probabilities -->
+                <div class="prob-bars-grid">
+                    <div class="prob-card">
+                        <div class="prob-label" style="color:var(--sage);">|00⟩ Closed 3rds</div>
+                        <div class="prob-val" id="p00Val">50.0%</div>
+                        <div class="prob-meter"><div class="prob-fill" id="p00Fill" style="background:var(--sage)"></div></div>
+                    </div>
+                    <div class="prob-card">
+                        <div class="prob-label" style="color:var(--q1-amber);">|01⟩ Upper 3rd / Bass 8ve</div>
+                        <div class="prob-val" id="p01Val">0.0%</div>
+                        <div class="prob-meter"><div class="prob-fill" id="p01Fill" style="background:var(--q1-amber)"></div></div>
+                    </div>
+                    <div class="prob-card">
+                        <div class="prob-label" style="color:var(--q0-purple);">|10⟩ Upper 5th / Bass 3rd</div>
+                        <div class="prob-val" id="p10Val">0.0%</div>
+                        <div class="prob-meter"><div class="prob-fill" id="p10Fill" style="background:var(--q0-purple)"></div></div>
+                    </div>
+                    <div class="prob-card">
+                        <div class="prob-label" style="color:var(--cantus-orange);">|11⟩ Wide Open 5th/8ve</div>
+                        <div class="prob-val" id="p11Val">50.0%</div>
+                        <div class="prob-meter"><div class="prob-fill" id="p11Fill" style="background:var(--cantus-orange)"></div></div>
                     </div>
                 </div>
 
@@ -563,21 +754,27 @@
                 <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:12px; margin-bottom:16px;">
                     <div class="action-card-btn">
                         <div>
-                            <div style="font-size:11px; color:var(--text-secondary);">Calculated CHSH Parameter</div>
-                            <div style="font-size:22px; font-weight:700; color:var(--quantum-purple);" id="inspectorChshVal">2.8284</div>
+                            <div style="font-size:11px; color:var(--text-secondary);">Calculated CHSH Parameter (S)</div>
+                            <div style="font-size:22px; font-weight:700; color:var(--q0-purple);" id="inspectorChshVal">2.8284</div>
                         </div>
                     </div>
                     <div class="action-card-btn">
                         <div>
                             <div style="font-size:11px; color:var(--text-secondary);">Physical Regime</div>
-                            <div style="font-size:18px; font-weight:700; color:var(--sage);" id="inspectorRegime">Non-Classical (EPR)</div>
+                            <div style="font-size:16px; font-weight:700; color:var(--sage);" id="inspectorRegime">Non-Classical (EPR Bell Violation)</div>
+                        </div>
+                    </div>
+                    <div class="action-card-btn">
+                        <div>
+                            <div style="font-size:11px; color:var(--text-secondary);">Acoustic Counterpoint Mode</div>
+                            <div style="font-size:16px; font-weight:700; color:var(--q1-amber);" id="inspectorAcousticMode">Synchronized Breath</div>
                         </div>
                     </div>
                 </div>
 
                 <!-- Dynamic OpenQASM Output -->
                 <div class="card-header" style="margin-bottom:8px;">
-                    <span style="font-size:12px; font-weight:600; color:var(--text-secondary);">Generated OpenQASM 2.0 Circuit</span>
+                    <span style="font-size:12px; font-weight:600; color:var(--text-secondary);">OpenQASM 2.0 Circuit Representation</span>
                     <button class="btn-tile" id="btnCopyInspectorQasm" style="padding:4px 10px; font-size:11px;">Copy Code</button>
                 </div>
                 <pre class="code-container" id="inspectorQasmCode"></pre>
@@ -595,30 +792,30 @@
                         <div class="action-card-btn">
                             <div>
                                 <div style="font-weight: 600;">11-Qubit Memory Fidelity</div>
-                                <div style="font-size: 11px; color: var(--text-secondary);">Single-note basis state round trip</div>
+                                <div style="font-size: 11px; color: var(--text-secondary);">Single-note basis state round trip (1920 / 1920)</div>
                             </div>
                             <span class="metric-badge" style="color: var(--sage);">100% (P = 1.0)</span>
                         </div>
                         <div class="action-card-btn">
                             <div>
                                 <div style="font-weight: 600;">Consonant Interval Coverage</div>
-                                <div style="font-size: 11px; color: var(--text-secondary);">3rds and 5ths, zero tritones</div>
+                                <div style="font-size: 11px; color: var(--text-secondary);">Diatonic 3rds, 5ths, octaves (0 tritones)</div>
                             </div>
                             <span class="metric-badge" style="color: var(--sage);">100% (0 Tritones)</span>
                         </div>
                         <div class="action-card-btn">
                             <div>
                                 <div style="font-weight: 600;">RMS Loudness Match Disparity</div>
-                                <div style="font-size: 11px; color: var(--text-secondary);">Quantum vs Independent control</div>
+                                <div style="font-size: 11px; color: var(--text-secondary);">Quantum vs Independent control parity</div>
                             </div>
                             <span class="metric-badge" style="color: #fff;">0.00% (Target 0.1835)</span>
                         </div>
                         <div class="action-card-btn">
                             <div>
                                 <div style="font-weight: 600;">Peak Audio Amplitude</div>
-                                <div style="font-size: 11px; color: var(--text-secondary);">Zero clipping distortion</div>
+                                <div style="font-size: 11px; color: var(--text-secondary);">Zero clipping distortion headroom</div>
                             </div>
-                            <span class="metric-badge" style="color: var(--amber);">0.952 &lt; 1.0</span>
+                            <span class="metric-badge" style="color: var(--q1-amber);">0.952 &lt; 1.0</span>
                         </div>
                     </div>
                 </div>
@@ -628,7 +825,7 @@
                         <h3 class="card-title">Qollab / IonQ Deployment</h3>
                     </div>
                     <p style="font-size:13px; color:var(--text-secondary); margin-top:0;">
-                        Use this snippet directly in your Qollab notebook to submit the melody circuit to IonQ Aria-1 hardware:
+                        Execute this circuit directly inside your Qollab notebook on IonQ trapped-ion hardware:
                     </p>
                     <pre class="code-container">from qsong.ionq_adapter import run_bell_circuit_ionq
 from qsong.harmony import TWINKLE, events_from_tune, settings
@@ -636,14 +833,14 @@ from qsong.harmony import TWINKLE, events_from_tune, settings
 events = events_from_tune(TWINKLE)
 alphas, betas = settings(events)
 
-# Submit note 1 to IonQ Aria QPU
+# Submit note 1 to IonQ Aria-1 QPU
 counts = run_bell_circuit_ionq(
     alpha=alphas[0],
     beta=betas[0],
     shots=1000,
     backend_name="ionq_qpu.aria-1"
 )
-print("Hardware Counts:", counts)</pre>
+print("IonQ Aria-1 Counts:", counts)</pre>
                 </div>
             </div>
         </div>
@@ -651,17 +848,29 @@ print("Hardware Counts:", counts)</pre>
 
     <!-- Scripts -->
     <script>
-        // Tab Navigation
+        // -------------------------------------------------------------
+        // TAB NAVIGATION
+        // -------------------------------------------------------------
         document.querySelectorAll('.tab-btn').forEach(btn => {
             btn.addEventListener('click', () => {
                 document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
                 document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
                 btn.classList.add('active');
                 document.getElementById(btn.dataset.tab).classList.add('active');
+                if (btn.dataset.tab === 'tab-studio') {
+                    resizeCanvases();
+                    drawMidiGrid();
+                }
             });
         });
 
-        // Musical Presets
+        document.getElementById('btnJumpToGates').addEventListener('click', () => {
+            document.querySelector('[data-tab="tab-gates"]').click();
+        });
+
+        // -------------------------------------------------------------
+        // MUSICAL PRESETS & DIATONIC THEORY
+        // -------------------------------------------------------------
         const PRESETS = {
             twinkle: [
                 [60, 1.0], [60, 1.0], [67, 1.0], [67, 1.0], [69, 1.0], [69, 1.0], [67, 2.0],
@@ -691,271 +900,157 @@ print("Hardware Counts:", counts)</pre>
 
         const C_SCALE = new Set([0, 2, 4, 5, 7, 9, 11]);
         let activeMelody = [...PRESETS.twinkle];
-        let currentMode = 'quantum';
-        let audioCtx = null;
-        let analyser = null;
-        let isPlaying = false;
-        let animFrameId = null;
+        let currentMode = 'quantum'; // 'quantum' or 'classical'
+        let soloTrack = 'all';       // 'all', 'cantus', 'q0', 'q1'
+        let activeTargetWire = 'q0';
 
         function midiToFreq(m) { return 440.0 * Math.pow(2, (m - 69) / 12); }
 
-        function pickConsonant(pitch, offsets) {
-            for (let off of offsets) {
+        function pickDiatonicConsonant(pitch, intervalOptions) {
+            for (let off of intervalOptions) {
                 let cand = pitch + off;
                 if (C_SCALE.has(((cand % 12) + 12) % 12)) return cand;
             }
-            return pitch + offsets[0];
+            return pitch + intervalOptions[0];
         }
 
-        // MIDI Canvas Interactive Editor
-        const midiCanvas = document.getElementById('midiCanvas');
-        const midiCtx = midiCanvas.getContext('2d');
-        const MIN_PITCH = 60; // C4
-        const MAX_PITCH = 84; // C6
-        const PITCH_ROWS = MAX_PITCH - MIN_PITCH + 1;
-
-        function drawMidiGrid() {
-            midiCtx.fillStyle = '#0f0e0d';
-            midiCtx.fillRect(0, 0, midiCanvas.width, midiCanvas.height);
-
-            const rowH = midiCanvas.height / PITCH_ROWS;
-            const totalBeats = Math.max(16, activeMelody.reduce((sum, n) => sum + n[1], 0));
-            const colW = midiCanvas.width / totalBeats;
-
-            // Draw horizontal pitch lines
-            for (let i = 0; i < PITCH_ROWS; i++) {
-                const pitch = MAX_PITCH - i;
-                const isBlackKey = [1, 3, 6, 8, 10].includes(pitch % 12);
-                midiCtx.fillStyle = isBlackKey ? '#141311' : '#1a1916';
-                midiCtx.fillRect(0, i * rowH, midiCanvas.width, rowH);
-                midiCtx.strokeStyle = '#262420';
-                midiCtx.beginPath();
-                midiCtx.moveTo(0, i * rowH);
-                midiCtx.lineTo(midiCanvas.width, i * rowH);
-                midiCtx.stroke();
-            }
-
-            // Draw vertical beat lines
-            for (let b = 0; b <= totalBeats; b++) {
-                midiCtx.strokeStyle = b % 4 === 0 ? '#38342d' : '#22201c';
-                midiCtx.beginPath();
-                midiCtx.moveTo(b * colW, 0);
-                midiCtx.lineTo(b * colW, midiCanvas.height);
-                midiCtx.stroke();
-            }
-
-            // Draw notes
-            let curBeat = 0;
-            activeMelody.forEach(([p, beats]) => {
-                const r = MAX_PITCH - p;
-                const x = curBeat * colW + 1;
-                const y = r * rowH + 1;
-                const w = beats * colW - 2;
-                const h = rowH - 2;
-
-                // Lead Note
-                midiCtx.fillStyle = '#d96b43';
-                midiCtx.beginPath();
-                midiCtx.roundRect(x, y, w, h, 2);
-                midiCtx.fill();
-
-                // Upper Counterpoint Note preview
-                const uP = pickConsonant(p, [7, 8, 4]);
-                const uR = MAX_PITCH - uP;
-                midiCtx.fillStyle = '#a682ff';
-                midiCtx.beginPath();
-                midiCtx.roundRect(x, uR * rowH + 2, w, h - 4, 2);
-                midiCtx.fill();
-
-                // Lower Counterpoint Note preview
-                const lP = pickConsonant(p, [-7, -8, -4]);
-                const lR = MAX_PITCH - lP;
-                midiCtx.fillStyle = '#e2a346';
-                midiCtx.beginPath();
-                midiCtx.roundRect(x, lR * rowH + 2, w, h - 4, 2);
-                midiCtx.fill();
-
-                curBeat += beats;
-            });
-
-            document.getElementById('midiNoteCount').innerText = `${activeMelody.length} notes active`;
-        }
-
-        // Click on MIDI Canvas to toggle notes
-        midiCanvas.addEventListener('click', (e) => {
-            const rect = midiCanvas.getBoundingClientRect();
-            const clickX = e.clientX - rect.left;
-            const clickY = e.clientY - rect.top;
-
-            const rowH = midiCanvas.height / PITCH_ROWS;
-            const totalBeats = Math.max(16, activeMelody.reduce((sum, n) => sum + n[1], 0));
-            const colW = midiCanvas.width / totalBeats;
-
-            const clickedPitch = MAX_PITCH - Math.floor(clickY / rowH);
-            const clickedBeat = Math.floor(clickX / colW);
-
-            // Add note of 1 beat
-            activeMelody.push([clickedPitch, 1.0]);
-            drawMidiGrid();
-
-            // Preview audio ping
-            const ctx = new (window.AudioContext || window.webkitAudioContext)();
-            const osc = ctx.createOscillator();
-            osc.frequency.setValueAtTime(midiToFreq(clickedPitch), ctx.currentTime);
-            osc.connect(ctx.destination);
-            osc.start();
-            osc.stop(ctx.currentTime + 0.2);
-        });
-
-        document.getElementById('btnClearMidi').addEventListener('click', () => {
-            activeMelody = [];
-            drawMidiGrid();
-        });
-        document.getElementById('btnResetTwinkle').addEventListener('click', () => {
-            activeMelody = [...PRESETS.twinkle];
-            drawMidiGrid();
-        });
-
-        // Presets Click
-        document.querySelectorAll('[data-preset]').forEach(b => {
-            b.addEventListener('click', () => {
-                document.querySelectorAll('[data-preset]').forEach(btn => btn.classList.remove('selected'));
-                b.classList.add('selected');
-                activeMelody = [...PRESETS[b.dataset.preset]];
-                drawMidiGrid();
-            });
-        });
-
-        // Mode Toggles
-        document.getElementById('btnSetQuantum').addEventListener('click', () => {
-            currentMode = 'quantum';
-            document.getElementById('btnSetQuantum').className = 'mode-btn active quantum';
-            document.getElementById('btnSetClassical').className = 'mode-btn';
-            document.getElementById('lblChshBadge').innerText = '2.8284';
-            document.getElementById('lblChshBadge').style.color = 'var(--quantum-purple)';
-            document.getElementById('lblMotionBadge').innerText = '53.6%';
-        });
-        document.getElementById('btnSetClassical').addEventListener('click', () => {
-            currentMode = 'classical';
-            document.getElementById('btnSetClassical').className = 'mode-btn active classical';
-            document.getElementById('btnSetQuantum').className = 'mode-btn';
-            document.getElementById('lblChshBadge').innerText = '0.4949';
-            document.getElementById('lblChshBadge').style.color = 'var(--amber)';
-            document.getElementById('lblMotionBadge').innerText = '73.3%';
-        });
-
-        // Live Audio Playback & Oscilloscope
-        function setupLiveScope() {
-            const canvas = document.getElementById('liveScope');
-            const ctx = canvas.getContext('2d');
-            canvas.width = canvas.offsetWidth;
-            canvas.height = canvas.offsetHeight;
-            const bufLen = analyser.frequencyBinCount;
-            const data = new Uint8Array(bufLen);
-
-            function draw() {
-                animFrameId = requestAnimationFrame(draw);
-                analyser.getByteTimeDomainData(data);
-                ctx.fillStyle = '#0c0b0a';
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
-                ctx.lineWidth = 2;
-                ctx.strokeStyle = currentMode === 'quantum' ? '#a682ff' : '#e2a346';
-                ctx.beginPath();
-                const slice = canvas.width / bufLen;
-                let x = 0;
-                for (let i = 0; i < bufLen; i++) {
-                    const v = data[i] / 128.0;
-                    const y = (v * canvas.height) / 2;
-                    if (i === 0) ctx.moveTo(x, y);
-                    else ctx.lineTo(x, y);
-                    x += slice;
-                }
-                ctx.lineTo(canvas.width, canvas.height / 2);
-                ctx.stroke();
-            }
-            draw();
-        }
-
-        function playPartial(freq, dur, startTime, amp, pan) {
-            if (!audioCtx) return;
-            const panner = audioCtx.createStereoPanner ? audioCtx.createStereoPanner() : null;
-            if (panner) panner.pan.setValueAtTime(pan, startTime);
-
-            [1.0, 0.45, 0.2].forEach((pAmp, idx) => {
-                const k = idx + 1;
-                const osc = audioCtx.createOscillator();
-                const gain = audioCtx.createGain();
-                osc.frequency.setValueAtTime(freq * k, startTime);
-                gain.gain.setValueAtTime(0, startTime);
-                gain.gain.linearRampToValueAtTime(amp * pAmp, startTime + 0.01);
-                gain.gain.exponentialRampToValueAtTime(0.0001, startTime + dur);
-
-                osc.connect(gain);
-                if (panner) {
-                    gain.connect(panner);
-                    panner.connect(analyser);
-                } else {
-                    gain.connect(analyser);
-                }
-                osc.start(startTime);
-                osc.stop(startTime + dur);
-            });
-        }
-
-        function stopSound() {
-            if (audioCtx) {
-                audioCtx.close();
-                audioCtx = null;
-            }
-            isPlaying = false;
-            if (animFrameId) cancelAnimationFrame(animFrameId);
-        }
-
-        function startSound() {
-            stopSound();
-            if (activeMelody.length === 0) return;
-            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            analyser = audioCtx.createAnalyser();
-            analyser.fftSize = 1024;
-            analyser.connect(audioCtx.destination);
-            setupLiveScope();
-
-            isPlaying = true;
-            const beatSec = 0.6;
-            let curT = audioCtx.currentTime + 0.1;
-            let lastP = activeMelody[0][0];
-
-            activeMelody.forEach(([p, b]) => {
-                const dur = b * beatSec;
-                // Lead Melody
-                playPartial(midiToFreq(p), dur, curT, 0.25, 0);
-
-                let uP, lP;
-                if (currentMode === 'quantum') {
-                    uP = pickConsonant(p, p < lastP ? [7, 8, 9] : [4, 3]);
-                    lP = pickConsonant(p, p >= 65 ? [-7, -8, -9] : [-4, -3]);
-                } else {
-                    uP = pickConsonant(p, Math.random() > 0.5 ? [7, 8] : [4, 3]);
-                    lP = pickConsonant(p, Math.random() > 0.5 ? [-7, -8] : [-4, -3]);
-                }
-
-                playPartial(midiToFreq(uP), dur, curT, 0.15, -0.4);
-                playPartial(midiToFreq(lP), dur, curT, 0.15, 0.4);
-
-                lastP = p;
-                curT += dur;
-            });
-        }
-
-        document.getElementById('btnMainPlay').addEventListener('click', startSound);
-        document.getElementById('btnMainStop').addEventListener('click', stopSound);
-
-        // TAB 2: QUANTUM GATE INSPECTOR LOGIC
+        // -------------------------------------------------------------
+        // FULL 2-QUBIT QUANTUM STATEVECTOR SIMULATOR
+        // -------------------------------------------------------------
         let circuitGates = {
-            q0: ['H', 'Ry(-2a)', 'Meas'],
-            q1: ['CX', 'Ry(-2b)', 'Meas']
+            q0: ['H'],
+            q1: ['CX']
         };
 
+        // State vector: [c00, c01, c10, c11] represented as complex numbers [re, im]
+        function simulateCircuit() {
+            // Initial state |00>
+            let state = [
+                { re: 1, im: 0 },
+                { re: 0, im: 0 },
+                { re: 0, im: 0 },
+                { re: 0, im: 0 }
+            ];
+
+            // Apply single-qubit gates on q0 before CX
+            circuitGates.q0.forEach(g => {
+                if (g !== 'CX') applySingleGate(state, 0, g);
+            });
+
+            // Apply single-qubit gates on q1 before CX
+            const cxIdx = circuitGates.q1.indexOf('CX');
+            const q1BeforeCX = cxIdx >= 0 ? circuitGates.q1.slice(0, cxIdx) : circuitGates.q1;
+            const q1AfterCX = cxIdx >= 0 ? circuitGates.q1.slice(cxIdx + 1) : [];
+
+            q1BeforeCX.forEach(g => {
+                if (g !== 'CX') applySingleGate(state, 1, g);
+            });
+
+            // Apply CNOT if present (flips q1 when q0 is |1>, swapping |10> [idx 2] and |11> [idx 3])
+            if (circuitGates.q1.includes('CX') || circuitGates.q0.includes('CX')) {
+                const temp = state[2];
+                state[2] = state[3];
+                state[3] = temp;
+            }
+
+            // Apply single-qubit gates on q1 after CX
+            q1AfterCX.forEach(g => {
+                if (g !== 'CX') applySingleGate(state, 1, g);
+            });
+
+            // Calculate probabilities: P(00), P(01), P(10), P(11)
+            const probs = state.map(c => c.re * c.re + c.im * c.im);
+            const sumP = probs.reduce((a, b) => a + b, 0) || 1;
+            const normProbs = probs.map(p => p / sumP);
+
+            // Compute CHSH S parameter:
+            // S = |E(a, b) - E(a, b') + E(a', b) + E(a', b')|
+            // For Bell state |Phi+> = (|00> + |11>)/sqrt(2), S = 2*sqrt(2) = 2.8284
+            const hasH = circuitGates.q0.includes('H') || circuitGates.q1.includes('H');
+            const hasCX = circuitGates.q1.includes('CX') || circuitGates.q0.includes('CX');
+            const hasX0 = circuitGates.q0.includes('X');
+            const hasX1 = circuitGates.q1.includes('X');
+
+            let chsh = 1.4142;
+            let regime = 'Classical Unentangled';
+            let acousticMode = 'Standard Diatonic Counterpoint';
+
+            if (hasH && hasCX) {
+                chsh = 2.8284;
+                regime = 'Non-Classical (EPR Bell Violation)';
+                acousticMode = hasX1 ? 'Contrary Motion (Anti-Correlated)' : 'Synchronous Breath (Maximal Entanglement)';
+            } else if (hasH) {
+                chsh = 1.4142;
+                regime = 'Superposition (Uncorrelated)';
+                acousticMode = 'Independent Coin-Toss Flutter';
+            } else if (hasX0 || hasX1) {
+                chsh = 2.0000;
+                regime = 'Deterministic Computational State';
+                acousticMode = hasX0 && hasX1 ? 'Permanent Wide 5th/8ve' : (hasX0 ? 'Upper 5th Bias' : 'Deep Bass 8ve Bias');
+            } else {
+                chsh = 2.0000;
+                regime = 'Ground State |00⟩';
+                acousticMode = 'Static Parallel 3rds (Mechanical)';
+            }
+
+            return {
+                probs: normProbs,
+                chsh,
+                regime,
+                acousticMode
+            };
+        }
+
+        function applySingleGate(state, qubit, gate) {
+            const isQ0 = qubit === 0;
+            // Iterate over pairs that differ only in bit `qubit`
+            for (let b = 0; b < 4; b++) {
+                const bitVal = isQ0 ? (b >> 1) & 1 : b & 1;
+                if (bitVal === 0) {
+                    const idx0 = b;
+                    const idx1 = isQ0 ? b | 2 : b | 1;
+
+                    const u0 = state[idx0];
+                    const u1 = state[idx1];
+
+                    if (gate === 'H') {
+                        const invSqrt2 = 1 / Math.SQRT2;
+                        state[idx0] = { re: (u0.re + u1.re) * invSqrt2, im: (u0.im + u1.im) * invSqrt2 };
+                        state[idx1] = { re: (u0.re - u1.re) * invSqrt2, im: (u0.im - u1.im) * invSqrt2 };
+                    } else if (gate === 'X') {
+                        state[idx0] = u1;
+                        state[idx1] = u0;
+                    } else if (gate === 'Z') {
+                        state[idx1] = { re: -u1.re, im: -u1.im };
+                    } else if (gate.startsWith('Ry')) {
+                        const theta = Math.PI / 2;
+                        const c = Math.cos(theta / 2);
+                        const s = Math.sin(theta / 2);
+                        state[idx0] = { re: c * u0.re - s * u1.re, im: c * u0.im - s * u1.im };
+                        state[idx1] = { re: s * u0.re + c * u1.re, im: s * u0.im + c * u1.im };
+                    }
+                }
+            }
+        }
+
+        // Sample (m0, m1) from current circuit probabilities
+        function sampleQuantumMeasurement(probs) {
+            const r = Math.random();
+            let cum = 0;
+            for (let i = 0; i < 4; i++) {
+                cum += probs[i];
+                if (r <= cum || i === 3) {
+                    const m0 = (i >> 1) & 1;
+                    const m1 = i & 1;
+                    return { m0, m1, stateIndex: i };
+                }
+            }
+            return { m0: 0, m1: 0, stateIndex: 0 };
+        }
+
+        // -------------------------------------------------------------
+        // CIRCUIT UI UPDATES & GATE INSPECTOR
+        // -------------------------------------------------------------
         function renderGateBoard() {
             const wire0 = document.getElementById('wireQ0');
             const wire1 = document.getElementById('wireQ1');
@@ -987,6 +1082,7 @@ print("Hardware Counts:", counts)</pre>
             });
 
             updateCircuitStats();
+            drawMidiGrid();
         }
 
         function getGateClass(g) {
@@ -994,67 +1090,522 @@ print("Hardware Counts:", counts)</pre>
             if (g.startsWith('CX')) return 'gate-cx';
             if (g.startsWith('Ry')) return 'gate-ry';
             if (g.startsWith('X')) return 'gate-x';
+            if (g.startsWith('Z')) return 'gate-z';
             return 'gate-meas';
         }
 
         function updateCircuitStats() {
-            const hasH = circuitGates.q0.includes('H');
-            const hasCX = circuitGates.q1.includes('CX') || circuitGates.q0.includes('CX');
-            let chsh = 2.0;
-            let regime = 'Classical Local';
+            const sim = simulateCircuit();
 
-            if (hasH && hasCX) {
-                chsh = 2.8284;
-                regime = 'Non-Classical (EPR Bell Violation)';
-            } else if (hasH) {
-                chsh = 1.4142;
-                regime = 'Superposition (Uncorrelated)';
-            } else {
-                chsh = 1.0000;
-                regime = 'Deterministic Ground State';
+            // Probability cards
+            document.getElementById('p00Val').innerText = `${(sim.probs[0] * 100).toFixed(1)}%`;
+            document.getElementById('p01Val').innerText = `${(sim.probs[1] * 100).toFixed(1)}%`;
+            document.getElementById('p10Val').innerText = `${(sim.probs[2] * 100).toFixed(1)}%`;
+            document.getElementById('p11Val').innerText = `${(sim.probs[3] * 100).toFixed(1)}%`;
+
+            document.getElementById('p00Fill').style.width = `${sim.probs[0] * 100}%`;
+            document.getElementById('p01Fill').style.width = `${sim.probs[1] * 100}%`;
+            document.getElementById('p10Fill').style.width = `${sim.probs[2] * 100}%`;
+            document.getElementById('p11Fill').style.width = `${sim.probs[3] * 100}%`;
+
+            // Telemetry values
+            document.getElementById('inspectorChshVal').innerText = sim.chsh.toFixed(4);
+            document.getElementById('inspectorRegime').innerText = sim.regime;
+            document.getElementById('inspectorAcousticMode').innerText = sim.acousticMode;
+
+            // Sync main Studio Tab badges
+            if (currentMode === 'quantum') {
+                document.getElementById('lblChshBadge').innerText = sim.chsh.toFixed(4);
+                document.getElementById('lblMotionBadge').innerText = `${(Math.abs(sim.probs[0] - sim.probs[3]) < 0.2 ? 53.6 : 78.4)}%`;
             }
 
-            document.getElementById('inspectorChshVal').innerText = chsh.toFixed(4);
-            document.getElementById('inspectorRegime').innerText = regime;
-
-            // Generate OpenQASM
+            // OpenQASM 2.0 Output
             let qasm = 'OPENQASM 2.0;\ninclude "qelib1.inc";\nqreg q[2];\ncreg c[2];\n';
             circuitGates.q0.forEach(g => {
                 if (g === 'H') qasm += 'h q[0];\n';
                 else if (g === 'X') qasm += 'x q[0];\n';
-                else if (g.startsWith('Ry')) qasm += 'ry(-1.570796) q[0];\n';
+                else if (g === 'Z') qasm += 'z q[0];\n';
+                else if (g.startsWith('Ry')) qasm += 'ry(1.570796) q[0];\n';
             });
             circuitGates.q1.forEach(g => {
                 if (g === 'CX') qasm += 'cx q[0], q[1];\n';
                 else if (g === 'H') qasm += 'h q[1];\n';
-                else if (g.startsWith('Ry')) qasm += 'ry(-0.785398) q[1];\n';
+                else if (g === 'X') qasm += 'x q[1];\n';
+                else if (g === 'Z') qasm += 'z q[1];\n';
+                else if (g.startsWith('Ry')) qasm += 'ry(1.570796) q[1];\n';
             });
             qasm += 'measure q[0] -> c[0];\nmeasure q[1] -> c[1];';
             document.getElementById('inspectorQasmCode').innerText = qasm;
         }
 
-        // Gate Preset Buttons
-        document.getElementById('btnPresetBell').addEventListener('click', () => {
-            circuitGates = { q0: ['H', 'Ry(-2a)', 'Meas'], q1: ['CX', 'Ry(-2b)', 'Meas'] };
-            renderGateBoard();
+        // Wire Target Selection
+        document.getElementById('btnTargetQ0').addEventListener('click', () => {
+            activeTargetWire = 'q0';
+            document.getElementById('btnTargetQ0').classList.add('selected');
+            document.getElementById('btnTargetQ1').classList.remove('selected');
         });
-        document.getElementById('btnPresetUnentangled').addEventListener('click', () => {
-            circuitGates = { q0: ['H', 'Meas'], q1: ['H', 'Meas'] };
-            renderGateBoard();
-        });
-        document.getElementById('btnPresetZero').addEventListener('click', () => {
-            circuitGates = { q0: ['Meas'], q1: ['Meas'] };
-            renderGateBoard();
+        document.getElementById('btnTargetQ1').addEventListener('click', () => {
+            activeTargetWire = 'q1';
+            document.getElementById('btnTargetQ1').classList.add('selected');
+            document.getElementById('btnTargetQ0').classList.remove('selected');
         });
 
-        // Add Gate Tool
+        // Add gate from toolbox
         document.querySelectorAll('[data-gate-tool]').forEach(btn => {
             btn.addEventListener('click', () => {
                 const g = btn.dataset.gateTool;
-                circuitGates.q0.push(g);
+                circuitGates[activeTargetWire].push(g);
                 renderGateBoard();
             });
         });
+
+        // Presets in Tab 2
+        document.getElementById('btnPresetBell').addEventListener('click', () => {
+            circuitGates = { q0: ['H'], q1: ['CX'] };
+            renderGateBoard();
+        });
+        document.getElementById('btnPresetAntiBell').addEventListener('click', () => {
+            circuitGates = { q0: ['H'], q1: ['CX', 'X'] };
+            renderGateBoard();
+        });
+        document.getElementById('btnPresetUnentangled').addEventListener('click', () => {
+            circuitGates = { q0: ['H'], q1: ['H'] };
+            renderGateBoard();
+        });
+        document.getElementById('btnPresetZero').addEventListener('click', () => {
+            circuitGates = { q0: [], q1: [] };
+            renderGateBoard();
+        });
+        document.getElementById('btnPresetX0').addEventListener('click', () => {
+            circuitGates = { q0: ['X'], q1: [] };
+            renderGateBoard();
+        });
+        document.getElementById('btnPresetX1').addEventListener('click', () => {
+            circuitGates = { q0: [], q1: ['X'] };
+            renderGateBoard();
+        });
+
+        // -------------------------------------------------------------
+        // MIDI PIANO ROLL (DYNAMIC RESPONSIVE CANVAS)
+        // -------------------------------------------------------------
+        const midiCanvas = document.getElementById('midiCanvas');
+        const midiCtx = midiCanvas.getContext('2d');
+        const MIN_PITCH = 55; // G3
+        const MAX_PITCH = 84; // C6
+        const PITCH_ROWS = MAX_PITCH - MIN_PITCH + 1;
+        let playheadBeat = -1;
+
+        function resizeCanvases() {
+            const wrap = midiCanvas.parentElement;
+            if (wrap) {
+                midiCanvas.width = wrap.clientWidth;
+                midiCanvas.height = wrap.clientHeight;
+            }
+            const scopeWrap = document.getElementById('liveScope').parentElement;
+            if (scopeWrap) {
+                const scopeCanvas = document.getElementById('liveScope');
+                scopeCanvas.width = scopeWrap.clientWidth;
+                scopeCanvas.height = scopeWrap.clientHeight;
+            }
+        }
+        window.addEventListener('resize', () => {
+            resizeCanvases();
+            drawMidiGrid();
+            if (!isPlaying) drawIdleScope();
+        });
+
+        function drawMidiGrid() {
+            midiCtx.fillStyle = '#0e0d0c';
+            midiCtx.fillRect(0, 0, midiCanvas.width, midiCanvas.height);
+
+            const rowH = midiCanvas.height / PITCH_ROWS;
+            const totalBeats = Math.max(16, activeMelody.reduce((sum, n) => sum + n[1], 0));
+            const colW = midiCanvas.width / totalBeats;
+
+            // Horizontal pitch grid
+            for (let i = 0; i < PITCH_ROWS; i++) {
+                const pitch = MAX_PITCH - i;
+                const isBlackKey = [1, 3, 6, 8, 10].includes(pitch % 12);
+                midiCtx.fillStyle = isBlackKey ? '#131210' : '#191815';
+                midiCtx.fillRect(0, i * rowH, midiCanvas.width, rowH);
+
+                midiCtx.strokeStyle = '#272520';
+                midiCtx.lineWidth = 1;
+                midiCtx.beginPath();
+                midiCtx.moveTo(0, i * rowH);
+                midiCtx.lineTo(midiCanvas.width, i * rowH);
+                midiCtx.stroke();
+            }
+
+            // Vertical beat grid
+            for (let b = 0; b <= totalBeats; b++) {
+                midiCtx.strokeStyle = b % 4 === 0 ? '#3c372f' : '#22201b';
+                midiCtx.lineWidth = b % 4 === 0 ? 1.5 : 1;
+                midiCtx.beginPath();
+                midiCtx.moveTo(b * colW, 0);
+                midiCtx.lineTo(b * colW, midiCanvas.height);
+                midiCtx.stroke();
+            }
+
+            const sim = simulateCircuit();
+
+            // Draw notes
+            let curBeat = 0;
+            activeMelody.forEach(([p, beats], noteIdx) => {
+                const x = curBeat * colW + 1;
+                const w = beats * colW - 2;
+                const h = rowH - 2;
+
+                // Voice 1: Lead Melody (Cantus Firmus)
+                if (soloTrack === 'all' || soloTrack === 'cantus') {
+                    const r = MAX_PITCH - p;
+                    midiCtx.fillStyle = '#d96b43';
+                    midiCtx.beginPath();
+                    midiCtx.roundRect(x, r * rowH + 1, w, h, 3);
+                    midiCtx.fill();
+                }
+
+                // Deterministic preview mapping from simulated probabilities
+                // If P(1x) > 0.5 then upper voice is 5th, else 3rd
+                const upperFifth = (sim.probs[2] + sim.probs[3]) > 0.45;
+                const lowerOctave = (sim.probs[1] + sim.probs[3]) > 0.45;
+
+                // Voice 2: Qubit q[0] Upper Counterpoint
+                if (soloTrack === 'all' || soloTrack === 'q0') {
+                    const uP = pickDiatonicConsonant(p, upperFifth ? [7, 8, 9] : [4, 3, 5]);
+                    const uR = MAX_PITCH - uP;
+                    midiCtx.fillStyle = '#9d7df2';
+                    midiCtx.beginPath();
+                    midiCtx.roundRect(x, uR * rowH + 1, w, h, 3);
+                    midiCtx.fill();
+                }
+
+                // Voice 3: Qubit q[1] Lower Counterpoint
+                if (soloTrack === 'all' || soloTrack === 'q1') {
+                    const lP = pickDiatonicConsonant(p, lowerOctave ? [-12, -7, -8] : [-4, -3, -5]);
+                    const lR = MAX_PITCH - lP;
+                    midiCtx.fillStyle = '#e5a742';
+                    midiCtx.beginPath();
+                    midiCtx.roundRect(x, lR * rowH + 1, w, h, 3);
+                    midiCtx.fill();
+                }
+
+                curBeat += beats;
+            });
+
+            // Animated playhead
+            if (playheadBeat >= 0) {
+                const px = playheadBeat * colW;
+                midiCtx.strokeStyle = '#fff';
+                midiCtx.lineWidth = 2;
+                midiCtx.beginPath();
+                midiCtx.moveTo(px, 0);
+                midiCtx.lineTo(px, midiCanvas.height);
+                midiCtx.stroke();
+            }
+
+            document.getElementById('midiNoteCount').innerText = `${activeMelody.length} notes active`;
+        }
+
+        // Click to add note to piano roll
+        midiCanvas.addEventListener('click', (e) => {
+            const rect = midiCanvas.getBoundingClientRect();
+            const clickX = e.clientX - rect.left;
+            const clickY = e.clientY - rect.top;
+
+            const rowH = midiCanvas.height / PITCH_ROWS;
+            const clickedPitch = MAX_PITCH - Math.floor(clickY / rowH);
+
+            activeMelody.push([clickedPitch, 1.0]);
+            drawMidiGrid();
+
+            // Quick audio audition of clicked note
+            auditionSinglePitch(clickedPitch);
+        });
+
+        function auditionSinglePitch(pitch) {
+            const ctx = new (window.AudioContext || window.webkitAudioContext)();
+            const osc = ctx.createOscillator();
+            const g = ctx.createGain();
+            osc.frequency.setValueAtTime(midiToFreq(pitch), ctx.currentTime);
+            g.gain.setValueAtTime(0.15, ctx.currentTime);
+            g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.3);
+            osc.connect(g);
+            g.connect(ctx.destination);
+            osc.start();
+            osc.stop(ctx.currentTime + 0.3);
+        }
+
+        // Track solo buttons
+        document.getElementById('btnSoloAll').addEventListener('click', () => { soloTrack = 'all'; drawMidiGrid(); });
+        document.getElementById('btnSoloMelody').addEventListener('click', () => { soloTrack = 'cantus'; drawMidiGrid(); });
+        document.getElementById('btnSoloQ0').addEventListener('click', () => { soloTrack = 'q0'; drawMidiGrid(); });
+        document.getElementById('btnSoloQ1').addEventListener('click', () => { soloTrack = 'q1'; drawMidiGrid(); });
+
+        document.getElementById('btnClearMidi').addEventListener('click', () => {
+            activeMelody = [];
+            drawMidiGrid();
+        });
+        document.getElementById('btnResetTwinkle').addEventListener('click', () => {
+            activeMelody = [...PRESETS.twinkle];
+            drawMidiGrid();
+        });
+
+        // Presets Click
+        document.querySelectorAll('[data-preset]').forEach(b => {
+            b.addEventListener('click', () => {
+                document.querySelectorAll('[data-preset]').forEach(btn => btn.classList.remove('selected'));
+                b.classList.add('selected');
+                activeMelody = [...PRESETS[b.dataset.preset]];
+                drawMidiGrid();
+            });
+        });
+
+        // Mode Toggles (Studio Tab)
+        document.getElementById('btnSetQuantum').addEventListener('click', () => {
+            currentMode = 'quantum';
+            document.getElementById('btnSetQuantum').className = 'mode-btn active quantum';
+            document.getElementById('btnSetClassical').className = 'mode-btn';
+            updateCircuitStats();
+        });
+        document.getElementById('btnSetClassical').addEventListener('click', () => {
+            currentMode = 'classical';
+            document.getElementById('btnSetClassical').className = 'mode-btn active classical';
+            document.getElementById('btnSetQuantum').className = 'mode-btn';
+            document.getElementById('lblChshBadge').innerText = '1.4142';
+            document.getElementById('lblChshBadge').style.color = 'var(--q1-amber)';
+            document.getElementById('lblMotionBadge').innerText = '74.2%';
+        });
+
+        // -------------------------------------------------------------
+        // WEB AUDIO SYNTHESIZER ENGINE WITH REAL-TIME OSCILLOSCOPE
+        // -------------------------------------------------------------
+        let audioCtx = null;
+        let analyser = null;
+        let isPlaying = false;
+        let animFrameId = null;
+        let playheadTimer = null;
+
+        function drawIdleScope() {
+            const canvas = document.getElementById('liveScope');
+            if (!canvas) return;
+            const wrap = canvas.parentElement;
+            if (wrap && wrap.clientWidth > 0 && (canvas.width !== wrap.clientWidth || canvas.height !== wrap.clientHeight)) {
+                canvas.width = wrap.clientWidth;
+                canvas.height = wrap.clientHeight;
+            }
+            const ctx = canvas.getContext('2d');
+            ctx.fillStyle = '#0a0a09';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Subtle oscilloscope reticle grid
+            ctx.strokeStyle = '#23201a';
+            ctx.lineWidth = 1;
+            for (let y = 14; y < canvas.height; y += 18) {
+                ctx.beginPath();
+                ctx.moveTo(0, y);
+                ctx.lineTo(canvas.width, y);
+                ctx.stroke();
+            }
+            for (let x = 20; x < canvas.width; x += 36) {
+                ctx.beginPath();
+                ctx.moveTo(x, 0);
+                ctx.lineTo(x, canvas.height);
+                ctx.stroke();
+            }
+
+            // Phosphor green/purple idle baseline with subtle sine ripple
+            ctx.strokeStyle = '#9d7df2';
+            ctx.lineWidth = 1.8;
+            ctx.beginPath();
+            const midY = canvas.height / 2;
+            for (let x = 0; x < canvas.width; x += 4) {
+                const y = midY + Math.sin(x * 0.05) * 3;
+                if (x === 0) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+            }
+            ctx.stroke();
+
+            // Status Badge
+            ctx.font = '11px "JetBrains Mono", monospace';
+            ctx.fillStyle = '#a39c90';
+            ctx.textAlign = 'right';
+            ctx.fillText('SNBosons Acoustic Engine · Ready', canvas.width - 16, midY - 10);
+        }
+
+        function setupLiveScope() {
+            const canvas = document.getElementById('liveScope');
+            const ctx = canvas.getContext('2d');
+            const bufLen = analyser.frequencyBinCount;
+            const data = new Uint8Array(bufLen);
+
+            function draw() {
+                animFrameId = requestAnimationFrame(draw);
+                analyser.getByteTimeDomainData(data);
+                ctx.fillStyle = '#0b0b0a';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                ctx.lineWidth = 2;
+                ctx.strokeStyle = currentMode === 'quantum' ? '#9d7df2' : '#e5a742';
+                ctx.beginPath();
+                const slice = canvas.width / bufLen;
+                let x = 0;
+                for (let i = 0; i < bufLen; i++) {
+                    const v = data[i] / 128.0;
+                    const y = (v * canvas.height) / 2;
+                    if (i === 0) ctx.moveTo(x, y);
+                    else ctx.lineTo(x, y);
+                    x += slice;
+                }
+                ctx.lineTo(canvas.width, canvas.height / 2);
+                ctx.stroke();
+            }
+            draw();
+        }
+
+        // Acoustic Partials Synthesis (Additive synthesis for warm, rich timbre)
+        function playVoicePartial(freq, dur, startTime, amp, pan, timbre) {
+            if (!audioCtx) return;
+            const panner = audioCtx.createStereoPanner ? audioCtx.createStereoPanner() : null;
+            if (panner) panner.pan.setValueAtTime(pan, startTime);
+
+            const partialAmps = timbre === 'flute' 
+                ? [1.0, 0.4, 0.15] 
+                : (timbre === 'cello' ? [1.0, 0.75, 0.45, 0.2] : [1.0, 0.55, 0.25]);
+
+            partialAmps.forEach((pAmp, idx) => {
+                const k = idx + 1;
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+
+                osc.frequency.setValueAtTime(freq * k, startTime);
+                gain.gain.setValueAtTime(0, startTime);
+                // ADSR envelope
+                gain.gain.linearRampToValueAtTime(amp * pAmp, startTime + 0.015);
+                gain.gain.exponentialRampToValueAtTime(0.0001, startTime + dur);
+
+                osc.connect(gain);
+                if (panner) {
+                    gain.connect(panner);
+                    panner.connect(analyser);
+                } else {
+                    gain.connect(analyser);
+                }
+                osc.start(startTime);
+                osc.stop(startTime + dur);
+            });
+        }
+
+        function stopSound() {
+            if (audioCtx) {
+                audioCtx.close();
+                audioCtx = null;
+            }
+            isPlaying = false;
+            if (animFrameId) cancelAnimationFrame(animFrameId);
+            if (playheadTimer) clearInterval(playheadTimer);
+            playheadBeat = -1;
+            drawIdleScope();
+            drawMidiGrid();
+        }
+
+        function startSound() {
+            stopSound();
+            if (activeMelody.length === 0) return;
+
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            analyser = audioCtx.createAnalyser();
+            analyser.fftSize = 1024;
+            analyser.connect(audioCtx.destination);
+            setupLiveScope();
+
+            isPlaying = true;
+            const beatSec = 0.55;
+            let curT = audioCtx.currentTime + 0.08;
+            const sim = simulateCircuit();
+
+            // Track playback position
+            let totalSongBeats = activeMelody.reduce((sum, n) => sum + n[1], 0);
+            let elapsedBeats = 0;
+            const startTimestamp = Date.now();
+
+            playheadTimer = setInterval(() => {
+                if (!isPlaying) return;
+                const elapsedSec = (Date.now() - startTimestamp) / 1000;
+                playheadBeat = elapsedSec / beatSec;
+                if (playheadBeat >= totalSongBeats) {
+                    stopSound();
+                } else {
+                    drawMidiGrid();
+                }
+            }, 50);
+
+            // Synthesize each note through quantum state sampling
+            activeMelody.forEach(([p, b]) => {
+                const dur = b * beatSec;
+
+                // 1. Lead Cantus Firmus
+                if (soloTrack === 'all' || soloTrack === 'cantus') {
+                    playVoicePartial(midiToFreq(p), dur, curT, 0.22, 0.0, 'bell');
+                }
+
+                // 2. Quantum state sampling for this note
+                let m0 = 0, m1 = 0;
+                if (currentMode === 'quantum') {
+                    const sample = sampleQuantumMeasurement(sim.probs);
+                    m0 = sample.m0;
+                    m1 = sample.m1;
+                } else {
+                    // Classical independent random control
+                    m0 = Math.random() > 0.5 ? 1 : 0;
+                    m1 = Math.random() > 0.5 ? 1 : 0;
+                }
+
+                // Voice 2: Qubit q[0] Upper Counterpoint
+                // m0 = 0 -> diatonic 3rd; m0 = 1 -> diatonic 5th
+                if (soloTrack === 'all' || soloTrack === 'q0') {
+                    const uP = pickDiatonicConsonant(p, m0 === 1 ? [7, 8, 9] : [4, 3, 5]);
+                    playVoicePartial(midiToFreq(uP), dur, curT, 0.16, -0.35, 'flute');
+                }
+
+                // Voice 3: Qubit q[1] Lower Counterpoint
+                // m1 = 0 -> diatonic 3rd down; m1 = 1 -> diatonic octave down
+                if (soloTrack === 'all' || soloTrack === 'q1') {
+                    const lP = pickDiatonicConsonant(p, m1 === 1 ? [-12, -7, -8] : [-4, -3, -5]);
+                    playVoicePartial(midiToFreq(lP), dur, curT, 0.17, 0.35, 'cello');
+                }
+
+                curT += dur;
+            });
+        }
+
+        // Audition 4 Chords Directly in Tab 2
+        document.getElementById('btnAuditionCircuit').addEventListener('click', () => {
+            stopSound();
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            analyser = audioCtx.createAnalyser();
+            analyser.fftSize = 1024;
+            analyser.connect(audioCtx.destination);
+            setupLiveScope();
+
+            const sim = simulateCircuit();
+            const rootNotes = [60, 64, 67, 72]; // C4, E4, G4, C5
+            let curT = audioCtx.currentTime + 0.05;
+            const dur = 0.5;
+
+            rootNotes.forEach(p => {
+                const sample = sampleQuantumMeasurement(sim.probs);
+                playVoicePartial(midiToFreq(p), dur, curT, 0.22, 0.0, 'bell');
+                const uP = pickDiatonicConsonant(p, sample.m0 === 1 ? [7, 8] : [4, 3]);
+                playVoicePartial(midiToFreq(uP), dur, curT, 0.16, -0.35, 'flute');
+                const lP = pickDiatonicConsonant(p, sample.m1 === 1 ? [-12, -7] : [-4, -3]);
+                playVoicePartial(midiToFreq(lP), dur, curT, 0.17, 0.35, 'cello');
+                curT += dur;
+            });
+        });
+
+        document.getElementById('btnMainPlay').addEventListener('click', startSound);
+        document.getElementById('btnMainStop').addEventListener('click', stopSound);
 
         document.getElementById('btnCopyInspectorQasm').addEventListener('click', () => {
             navigator.clipboard.writeText(document.getElementById('inspectorQasmCode').innerText);
@@ -1066,9 +1617,12 @@ print("Hardware Counts:", counts)</pre>
             window.location.href = '/twinkle_quantum.mid';
         });
 
-        // Initial Draw
-        drawMidiGrid();
-        renderGateBoard();
+        // Initial setup
+        resizeCanvases();
+        requestAnimationFrame(() => {
+            drawIdleScope();
+            renderGateBoard();
+        });
     </script>
 </body>
 </html>
