@@ -48,6 +48,8 @@ The system is paired with a strict classical control baseline and double-blind l
 
 ---
 
+## 4. Key Performance Indicators (KPIs)
+
 | Metric | Target | Verification Method | Status (Session Run) |
 |---|---|---|---|
 | Single-note round trip fidelity | $100\%$ ($1920/1920$) | Automated unit tests | Verified (0 failures / 1920) |
