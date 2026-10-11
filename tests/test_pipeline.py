@@ -216,3 +216,59 @@ def test_11_private_keys_isolation_and_reproducibility():
             private_key_dir=key_dir,
         )
         assert keys1 == keys2, "Key generation with fixed seed 2026 must be reproducible"
+
+
+# Test 12: Secondary tune (Ode to Joy) exact round trip, angle coverage, and consonance (Task R4/R5)
+def test_12_ode_to_joy_roundtrip_and_consonance():
+    from qsong.harmony import ODE_TO_JOY
+
+    events = events_from_tune(ODE_TO_JOY)
+    assert len(events) == 16
+
+    # 1. Exact quantum basis round trip
+    reconstructed = roundtrip_melody(events)
+    assert len(reconstructed) == 16
+    for orig, rec in zip(events, reconstructed):
+        assert orig == rec
+
+    # 2. Angle settings must cover all 4 CHSH combinations
+    alphas, betas = settings(events)
+    counts = {"0_pos": 0, "0_neg": 0, "pi4_pos": 0, "pi4_neg": 0}
+    for a, b in zip(alphas, betas):
+        if abs(a) < 1e-4 and b > 0:
+            counts["0_pos"] += 1
+        elif abs(a) < 1e-4 and b < 0:
+            counts["0_neg"] += 1
+        elif abs(a - np.pi / 4.0) < 1e-4 and b > 0:
+            counts["pi4_pos"] += 1
+        else:
+            counts["pi4_neg"] += 1
+    assert all(c > 0 for c in counts.values()), f"Ode to Joy missing an angle setting: {counts}"
+
+    # 3. Consonance across 100 seeds
+    for seed in range(100):
+        rng = np.random.default_rng(seed)
+        pairs = [sample_bell_pair(a, b, rng) for a, b in zip(alphas, betas)]
+        upper, lower = duet_voices(events, pairs)
+        for (p, _, _), u, l in zip(events, upper, lower):
+            assert abs(u - p) in VALID_CONSONANT_INTERVALS
+            assert abs(p - l) in VALID_CONSONANT_INTERVALS
+            assert u % 12 in C_MAJOR_PITCH_CLASSES
+            assert l % 12 in C_MAJOR_PITCH_CLASSES
+
+
+# Test 13: Secondary tune (Ode to Joy) audio render and RMS match
+def test_13_ode_to_joy_render_and_rms_match():
+    from qsong.harmony import ODE_TO_JOY
+
+    res_q = run_experiment(tune=ODE_TO_JOY, seed=101, mode="quantum")
+    res_c = run_experiment(tune=ODE_TO_JOY, seed=101, mode="independent")
+
+    rms_q = res_q["rms"]
+    rms_c = res_c["rms"]
+    error_pct = abs(rms_q - rms_c) / rms_c * 100.0
+
+    assert error_pct < 0.5, f"Ode to Joy RMS mismatch {error_pct:.4f}% exceeds 0.5%"
+    assert res_q["max_abs"] < 1.0, f"Ode to Joy quantum mix clipped: {res_q['max_abs']}"
+    assert res_c["max_abs"] < 1.0, f"Ode to Joy independent mix clipped: {res_c['max_abs']}"
+

@@ -22,6 +22,14 @@ TWINKLE: List[Tuple[int, float]] = [
     (65, 1.0), (65, 1.0), (64, 1.0), (64, 1.0), (62, 1.0), (62, 1.0), (60, 2.0),
 ]
 
+# Secondary reference tune: Beethoven's Ode to Joy (16 notes, 4 bars in C major)
+ODE_TO_JOY: List[Tuple[int, float]] = [
+    (64, 1.0), (64, 1.0), (65, 1.0), (67, 1.0),
+    (67, 1.0), (65, 1.0), (64, 1.0), (62, 1.0),
+    (60, 1.0), (60, 1.0), (62, 1.0), (64, 1.0),
+    (64, 1.0), (62, 1.0), (62, 1.0), (62, 1.0),
+]
+
 C_MAJOR_PITCH_CLASSES = {0, 2, 4, 5, 7, 9, 11}
 VALID_CONSONANT_INTERVALS = {3, 4, 7, 8, 9}
 

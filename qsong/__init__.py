@@ -12,6 +12,7 @@ from .encode import (
 )
 from .harmony import (
     TWINKLE,
+    ODE_TO_JOY,
     C_MAJOR_PITCH_CLASSES,
     pick,
     settings,
@@ -41,6 +42,7 @@ __all__ = [
     "roundtrip_note",
     "roundtrip_melody",
     "TWINKLE",
+    "ODE_TO_JOY",
     "C_MAJOR_PITCH_CLASSES",
     "pick",
     "settings",

@@ -1,0 +1,36 @@
+{
+  "twinkle": {
+    "quantum": {
+      "seed": 101,
+      "chsh": 2.6085858585858586,
+      "same_direction_fraction": 0.5365853658536586,
+      "rms": 0.1835,
+      "max_abs": 0.9522352274457281
+    },
+    "independent": {
+      "seed": 101,
+      "chsh": 0.4949494949494949,
+      "same_direction_fraction": 0.6341463414634146,
+      "rms": 0.1835,
+      "max_abs": 0.9551269735138037
+    },
+    "rms_match_diff_pct": 0.0
+  },
+  "ode_to_joy": {
+    "quantum": {
+      "seed": 101,
+      "chsh": 2.75,
+      "same_direction_fraction": 0.4666666666666667,
+      "rms": 0.1835,
+      "max_abs": 0.8429619786822272
+    },
+    "independent": {
+      "seed": 101,
+      "chsh": -2.0,
+      "same_direction_fraction": 0.7333333333333333,
+      "rms": 0.18350000000000002,
+      "max_abs": 0.9194954498182472
+    },
+    "rms_match_diff_pct": 1.5125654286446272e-14
+  }
+}
