@@ -120,9 +120,47 @@ def simulate_qiskit_circuit(circuit_gates=None, alpha=0.0, beta=0.0, shots=1000)
     }
 
 
+def get_qollab_py_code():
+    """
+    Reads the production qollab/main.py script for zero-key execution on qollab.xyz.
+    """
+    candidates = [
+        os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "qollab", "main.py"),
+        os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "main.py"),
+        os.path.join(os.getcwd(), "qollab", "main.py"),
+        os.path.join(os.getcwd(), "main.py"),
+    ]
+    for p in candidates:
+        if os.path.exists(p):
+            try:
+                with open(p, "r", encoding="utf-8") as f:
+                    return f.read()
+            except Exception:
+                pass
+
+    return '''# SNBosons — Quantum Bell Counterpoint on Qollab (qollab.xyz)
+import math
+from qiskit import QuantumCircuit
+
+if "backend" not in globals():
+    from qiskit.providers.basic_provider import BasicProvider
+    backend = BasicProvider().get_backend("basic_simulator")
+
+def main(shots: int = 1024, transpose: int = 0, full_song: bool = False, verbose: bool = True):
+    print("SNBosons Qollab Runner")
+    qc = QuantumCircuit(2, 2)
+    qc.h(0)
+    qc.cx(0, 1)
+    qc.measure([0, 1], [0, 1])
+    job = backend.run(qc, shots=shots)
+    print("Counts:", job.result().get_counts())
+'''
+
+
 def generate_qollab_notebook_json(melody_name="Ode to Joy"):
     """
     Generates a ready-to-run Jupyter notebook configured for Qollab / IonQ hardware.
+    Explains the Qollab zero-key runner model as well as local/IonQ hardware execution.
     """
     nb = {
         "cells": [
@@ -130,9 +168,13 @@ def generate_qollab_notebook_json(melody_name="Ode to Joy"):
                 "cell_type": "markdown",
                 "metadata": {},
                 "source": [
-                    "# SNBosons — IonQ Aria Quantum Counterpoint\n",
-                    f"**Tune:** {melody_name} | **Target QPU:** `ionq_qpu.aria-1` (32 Algorithmic Qubits)\n",
-                    "This notebook executes the 2-qubit entangled Bell circuit on IonQ hardware and synthesizes acoustic species counterpoint."
+                    "# SNBosons — Quantum Bell Counterpoint (Qollab / IonQ)\n",
+                    f"**Tune:** {melody_name} | **Target:** Qollab Zero-Key Runner / IonQ Hardware\n",
+                    "\n",
+                    "### Running on Qollab (qollab.xyz):\n",
+                    "1. On **Qollab**, do NOT provide API keys or run `pip install`.\n",
+                    "2. The runtime pre-creates a global `backend` variable when you choose your QPU or simulator in the **Select QPU** dialog.\n",
+                    "3. IonQ hardware backends on Qollab enforce **one job per run**; multi-circuit batches are passed directly to `backend.run(circuits)`."
                 ]
             },
             {
@@ -140,16 +182,22 @@ def generate_qollab_notebook_json(melody_name="Ode to Joy"):
                 "execution_count": None,
                 "metadata": {},
                 "source": [
-                    "!pip install qiskit qiskit-ionq numpy mido\n",
-                    "import os\n",
+                    "import math\n",
                     "from qiskit import QuantumCircuit\n",
-                    "from qiskit_ionq import IonQProvider\n",
                     "\n",
-                    "# Set your IonQ API Key from Qollab environment\n",
-                    "IONQ_KEY = os.environ.get('IONQ_API_KEY', 'YOUR_IONQ_API_KEY')\n",
-                    "provider = IonQProvider(token=IONQ_KEY)\n",
-                    "backend = provider.get_backend('ionq_qpu.aria-1')\n",
-                    "print('Connected to IonQ Aria:', backend.name())"
+                    "# Qollab provides `backend` globally when you choose a QPU/simulator in the 'Select QPU' dialog.\n",
+                    "# Fallback provider if running outside Qollab (e.g. locally or in standard Jupyter):\n",
+                    "if 'backend' not in globals():\n",
+                    "    try:\n",
+                    "        from qiskit.providers.basic_provider import BasicProvider\n",
+                    "        backend = BasicProvider().get_backend('basic_simulator')\n",
+                    "    except Exception:\n",
+                    "        import os\n",
+                    "        from qiskit_ionq import IonQProvider\n",
+                    "        token = os.environ.get('IONQ_API_KEY', 'YOUR_KEY')\n",
+                    "        backend = IonQProvider(token=token).get_backend('ionq_simulator')\n",
+                    "\n",
+                    "print('Target Backend:', getattr(backend, 'name', lambda: str(backend))())"
                 ]
             },
             {
@@ -158,16 +206,17 @@ def generate_qollab_notebook_json(melody_name="Ode to Joy"):
                 "metadata": {},
                 "source": [
                     "# Define note circuit with melody interval angles\n",
-                    "alpha = 0.785398  # pi / 4 (downward melody motion)\n",
-                    "beta  = 0.392699  # pi / 8 (treble register)\n",
+                    "# Voice 0 (Melody): Ry(-2 * alpha) | Voice 1 (Counterpoint): Ry(-2 * beta)\n",
+                    "alpha = 0.785398  # pi / 4\n",
+                    "beta  = 0.392699  # pi / 8\n",
                     "\n",
-                    "qc = QuantumCircuit(2, 2)\n",
+                    "qc = QuantumCircuit(2, 2, name='Measure_1')\n",
                     "qc.h(0)\n",
                     "qc.cx(0, 1)\n",
                     "qc.ry(-2.0 * alpha, 0)\n",
                     "qc.ry(-2.0 * beta, 1)\n",
                     "qc.measure([0, 1], [0, 1])\n",
-                    "qc.draw('text')"
+                    "print(qc.draw('text'))"
                 ]
             },
             {
@@ -175,11 +224,20 @@ def generate_qollab_notebook_json(melody_name="Ode to Joy"):
                 "execution_count": None,
                 "metadata": {},
                 "source": [
-                    "# Submit Job to IonQ QPU\n",
-                    "job = backend.run(qc, shots=1000)\n",
-                    "print('Submitted Job ID:', job.job_id())\n",
-                    "counts = job.result().get_counts()\n",
-                    "print('IonQ Aria-1 Counts:', counts)"
+                    "# Submit Job to Selected Backend (Zero API keys needed in Qollab)\n",
+                    "shots = 1000\n",
+                    "job = backend.run(qc, shots=shots)\n",
+                    "result = job.result()\n",
+                    "counts = result.get_counts()\n",
+                    "print('Quantum Measurement Counts:', counts)\n",
+                    "\n",
+                    "# Compute Bell correlation E(a, b) and consonant harmony interval\n",
+                    "total = sum(counts.values())\n",
+                    "p_same = (counts.get('00', 0) + counts.get('11', 0)) / total\n",
+                    "p_diff = (counts.get('01', 0) + counts.get('10', 0)) / total\n",
+                    "corr_e = p_same - p_diff\n",
+                    "print(f'Bell State Correlation E : {corr_e:+.4f}')\n",
+                    "print(f'Consonance Ratio         : {p_same * 100:.1f}%')"
                 ]
             }
         ],
@@ -254,15 +312,59 @@ class handler(BaseHTTPRequestHandler):
                 self.wfile.write(body)
 
             elif path == "/api/qollab":
-                nb = generate_qollab_notebook_json()
-                body = json.dumps(nb, indent=2).encode("utf-8")
-                self.send_response(200)
-                self._send_cors_headers()
-                self.send_header("Content-Type", "application/x-ipynb+json")
-                self.send_header("Content-Disposition", 'attachment; filename="snbosons_ionq_qollab.ipynb"')
-                self.send_header("Content-Length", str(len(body)))
-                self.end_headers()
-                self.wfile.write(body)
+                parsed_req = urllib.parse.urlparse(self.path)
+                qs = urllib.parse.parse_qs(parsed_req.query)
+                req_format = qs.get("format", ["ipynb"])[0].lower()
+
+                if req_format in ("py", "python", "code"):
+                    py_code = get_qollab_py_code()
+                    body = py_code.encode("utf-8")
+                    self.send_response(200)
+                    self._send_cors_headers()
+                    self.send_header("Content-Type", "text/x-python; charset=utf-8")
+                    self.send_header("Content-Disposition", 'attachment; filename="main.py"')
+                    self.send_header("Content-Length", str(len(body)))
+                    self.end_headers()
+                    self.wfile.write(body)
+                elif req_format == "json":
+                    py_code = get_qollab_py_code()
+                    resp = {
+                        "status": "ready",
+                        "platform": "qollab.xyz",
+                        "entrypoint": "main.py",
+                        "requires_api_key": False,
+                        "runner_dialog": "Select QPU",
+                        "supported_backends": [
+                            "BasicSimulator (built-in, free)",
+                            "IBM Noise Models (free)",
+                            "IonQ Simulators (free remote)",
+                            "IonQ Forte / Aria (QPU hardware)"
+                        ],
+                        "rules": [
+                            "Zero API keys required: Qollab injects pre-created `backend` global",
+                            "One job per run on IonQ: multi-measure circuits must be batched in single backend.run()",
+                            "Interactive parameters via def main(shots: int = 1024, ...) on single line"
+                        ],
+                        "main_py": py_code
+                    }
+                    body = json.dumps(resp, indent=2).encode("utf-8")
+                    self.send_response(200)
+                    self._send_cors_headers()
+                    self.send_header("Content-Type", "application/json")
+                    self.send_header("Content-Length", str(len(body)))
+                    self.end_headers()
+                    self.wfile.write(body)
+                else:
+                    nb = generate_qollab_notebook_json()
+                    body = json.dumps(nb, indent=2).encode("utf-8")
+                    self.send_response(200)
+                    self._send_cors_headers()
+                    self.send_header("Content-Type", "application/x-ipynb+json")
+                    self.send_header("Content-Disposition", 'attachment; filename="snbosons_ionq_qollab.ipynb"')
+                    self.send_header("Content-Length", str(len(body)))
+                    self.end_headers()
+                    self.wfile.write(body)
+
 
             else:
                 self.send_response(404)

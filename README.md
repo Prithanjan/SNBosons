@@ -224,10 +224,22 @@ SNBosons/
 
 ## IonQ & Qollab Integration
 
-### Running in Qollab
-1. Link repository `https://github.com/Prithanjan/SNBosons` in your Qollab project workspace.
-2. Launch [`notebooks/SNBosons_Qollab_Interactive.ipynb`](notebooks/SNBosons_Qollab_Interactive.ipynb).
-3. Execute Bell CHSH circuits directly on IonQ QPUs using `qsong.ionq_adapter`:
+### Running on Qollab (qollab.xyz)
+[Qollab](https://qollab.xyz) is an in-browser quantum playground (Python 3.14 + Qiskit 2.x via Pyodide) requiring **zero API keys**:
+1. Open **[qollab.xyz](https://qollab.xyz)** and create a new Python / Qiskit project (or upload [`main.py`](main.py)).
+2. Paste [`qollab/main.py`](qollab/main.py) into the **Code** tab.
+3. Click **Run** $\to$ The **Select QPU** dialog opens.
+4. Select your runner: Free Simulator (BasicSimulator / IonQ Simulator) or physical IonQ Hardware (Aria / Forte).
+5. Qollab pre-creates and injects `backend` into the global scope. View the quantum counterpoint synthesis and duet score live in the console!
+
+```python
+# In Qollab (qollab.xyz), `backend` is pre-created by the runner!
+job = backend.run(circuit, shots=1024)
+counts = job.result().get_counts()
+```
+
+### Running Standalone on IonQ Hardware (Local / Colab)
+If running outside Qollab with your own IonQ API credentials:
 
 ```python
 import os

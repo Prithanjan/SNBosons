@@ -1146,35 +1146,43 @@
                 <div class="card">
                     <div class="card-header">
                         <h3 class="card-title">Qollab / IonQ Deployment</h3>
-                        <span class="badge" style="background: rgba(168, 85, 247, 0.15); border: 1px solid var(--q0-purple); color: #d8b4fe;">IonQ Aria-1 Ready</span>
+                        <span class="badge" style="background: rgba(168, 85, 247, 0.15); border: 1px solid var(--q0-purple); color: #d8b4fe;">Zero-Key Qollab Runner</span>
                     </div>
                     <p style="font-size:13px; color:var(--text-secondary); margin-top:0;">
-                        Run this entangled counterpoint circuit live on trapped-ion quantum computers or export directly to a Qollab Jupyter notebook:
+                        Run on <strong><a href="https://qollab.xyz" target="_blank" style="color:var(--cantus-orange); text-decoration:underline;">Qollab (qollab.xyz)</a></strong> with <strong>zero API keys</strong>! In Qollab, select your QPU or free simulator in the <em>Select QPU</em> dialog. The runtime injects the pre-created <code>backend</code> global into <code>main.py</code>:
                     </p>
-                    <pre class="code-container">from qsong.ionq_adapter import run_bell_circuit_ionq
-from qsong.harmony import TWINKLE, events_from_tune, settings
+                    <pre class="code-container" id="qollabCodeSnippet"># Qollab (qollab.xyz) — Python 3.14 + Qiskit 2.x
+# Zero API keys needed: Select QPU in dialog, `backend` is pre-created!
+from qiskit import QuantumCircuit
 
-events = events_from_tune(TWINKLE)
-alphas, betas = settings(events)
-
-# Submit note 1 to IonQ Aria-1 QPU
-counts = run_bell_circuit_ionq(
-    alpha=alphas[0],
-    beta=betas[0],
-    shots=1000,
-    backend_name="ionq_qpu.aria-1"
-)
-print("IonQ Aria-1 Counts:", counts)</pre>
+def main(shots: int = 1024, transpose: int = 0, full_song: bool = False, verbose: bool = True):
+    print("SNBosons Bell Counterpoint on Qollab")
+    # Generates 2-qubit entangled Bell pair (|00> + |11>) / sqrt(2)
+    qc = QuantumCircuit(2, 2)
+    qc.h(0); qc.cx(0, 1)
+    qc.ry(-2.0 * 0.785, 0); qc.ry(-2.0 * 0.393, 1)
+    qc.measure([0, 1], [0, 1])
+    # Single-job submission (IonQ compliant)
+    job = backend.run(qc, shots=shots)
+    print("Duet Counts:", job.result().get_counts())</pre>
 
                     <div style="display: flex; gap: 10px; margin-top: 14px; flex-wrap: wrap;">
-                        <button class="btn btn-primary" id="btnRunIonqHardware" style="display:inline-flex; align-items:center; gap:6px;">
+                        <a href="/api/qollab?format=py" download="main.py" class="btn btn-primary" id="btnDownloadQollabPy" style="text-decoration:none; display:inline-flex; align-items:center; gap:6px;">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                            Download Qollab main.py
+                        </a>
+                        <button class="btn btn-secondary" id="btnCopyQollabCode" style="display:inline-flex; align-items:center; gap:6px;">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                            Copy Qollab Code
+                        </button>
+                        <a href="/api/qollab?format=ipynb" download="snbosons_ionq_qollab.ipynb" class="btn btn-secondary" id="btnDownloadQollabNb" style="text-decoration:none; display:inline-flex; align-items:center; gap:6px;">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+                            Download Notebook (.ipynb)
+                        </a>
+                        <button class="btn btn-secondary" id="btnRunIonqHardware" style="display:inline-flex; align-items:center; gap:6px;">
                             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
                             Run on IonQ Aria-1 (Simulated/QPU)
                         </button>
-                        <a href="/api/qollab" download="snbosons_ionq_qollab.ipynb" class="btn btn-secondary" id="btnDownloadQollabNb" style="text-decoration:none; display:inline-flex; align-items:center; gap:6px;">
-                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                            Download Qollab Notebook (.ipynb)
-                        </a>
                         <button class="btn btn-secondary" id="btnTestQiskitApi" style="display:inline-flex; align-items:center; gap:6px;">
                             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
                             Test Serverless Qiskit API
@@ -2427,6 +2435,23 @@ print("IonQ Aria-1 Counts:", counts)</pre>
         // -------------------------------------------------------------
         // TAB 3: IONQ & QISKIT LIVE EXECUTION ACTIONS
         // -------------------------------------------------------------
+        const btnCopyQollabCode = document.getElementById('btnCopyQollabCode');
+        if (btnCopyQollabCode) {
+            btnCopyQollabCode.addEventListener('click', () => {
+                fetch('/api/qollab?format=py')
+                    .then(r => r.text())
+                    .then(code => {
+                        navigator.clipboard.writeText(code);
+                        showToast('📋 Qollab main.py copied to clipboard!');
+                    })
+                    .catch(() => {
+                        const snippet = document.getElementById('qollabCodeSnippet').innerText;
+                        navigator.clipboard.writeText(snippet);
+                        showToast('📋 Qollab code snippet copied!');
+                    });
+            });
+        }
+
         const btnRunIonqHardware = document.getElementById('btnRunIonqHardware');
         if (btnRunIonqHardware) {
             btnRunIonqHardware.addEventListener('click', () => {

@@ -103,7 +103,8 @@ In SNBosons, **quantum non-locality replaces the rulebook**. By entangling parti
 
 ### 2. Running on IonQ Hardware & Qollab
 - **Run on IonQ Aria-1 (Simulated/QPU):** Submits the Bell state counterpoint circuit directly to IonQ's API or runs a high-fidelity 32-qubit Aria-1 emulator.
-- **Download Qollab Notebook (.ipynb):** Downloads a pre-configured Jupyter notebook ready to upload to Qollab or Google Colab with `qiskit` and `qiskit-ionq`.
+- **Download Qollab Code (main.py):** Downloads the zero-key script for [Qollab](https://qollab.xyz) — select your QPU or simulator in Qollab's "Select QPU" modal without any API keys!
+- **Download Jupyter Notebook (.ipynb):** Downloads a pre-configured notebook ready for local Jupyter, Colab, or Qollab.
 - **Test Serverless Qiskit API:** Verifies the Vercel serverless Python simulator (`/api/simulate`) in real time.
 
 ### 3. Exporting MIDI

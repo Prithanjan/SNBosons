@@ -57,6 +57,24 @@ def test_api_qollab_notebook_endpoint():
     assert data["nbformat"] == 4
 
 
+def test_api_qollab_py_endpoint():
+    status, body = send_mock_request("GET", "/api/qollab?format=py")
+    assert status == 200
+    assert "def main(" in body
+    assert "qollab.xyz" in body
+    assert "backend.run" in body
+
+
+def test_api_qollab_json_endpoint():
+    status, body = send_mock_request("GET", "/api/qollab?format=json")
+    assert status == 200
+    data = json.loads(body)
+    assert data["platform"] == "qollab.xyz"
+    assert data["requires_api_key"] is False
+    assert "main_py" in data
+
+
+
 def test_api_simulate_tuples_and_dicts():
     # 1. Tuples format
     body1 = json.dumps({
