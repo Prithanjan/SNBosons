@@ -64,9 +64,18 @@ def simulate_qiskit_circuit(circuit_gates=None, alpha=0.0, beta=0.0, shots=1000)
 
         # Return QASM and diagram
         try:
-            qasm_str = qc.qasm()
+            from qiskit.qasm2 import dumps as qasm2_dumps
+            qasm_str = qasm2_dumps(qc)
         except Exception:
-            qasm_str = "OPENQASM 2.0;\ninclude \"qelib1.inc\";\nqreg q[2];\ncreg c[2];\nh q[0];\ncx q[0], q[1];\nmeasure q[0] -> c[0];\nmeasure q[1] -> c[1];"
+            try:
+                qasm_str = qc.qasm()
+            except Exception:
+                qasm_str = (
+                    'OPENQASM 2.0;\ninclude "qelib1.inc";\nqreg q[2];\ncreg c[2];\n'
+                    'h q[0];\ncx q[0], q[1];\n'
+                    f'ry({-2.0 * alpha:.4f}) q[0];\nry({-2.0 * beta:.4f}) q[1];\n'
+                    'measure q[0] -> c[0];\nmeasure q[1] -> c[1];'
+                )
         
         circuit_repr = str(qc.draw(output='text'))
     else:
@@ -268,31 +277,38 @@ class handler(BaseHTTPRequestHandler):
                 }
                 self.wfile.write(json.dumps(debug_info).encode("utf-8"))
         else:
-            # Static file serving fallback for local dev
+            # Static file serving fallback for standalone local dev
             rel_path = path.lstrip("/") or "index.html"
-            base_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "web")
-            file_path = os.path.normpath(os.path.join(base_dir, rel_path))
-            if os.path.exists(file_path) and os.path.isfile(file_path):
-                content_type = "text/html"
-                if file_path.endswith(".css"): content_type = "text/css"
-                elif file_path.endswith(".js"): content_type = "application/javascript"
-                elif file_path.endswith(".json"): content_type = "application/json"
-                elif file_path.endswith(".png"): content_type = "image/png"
-                elif file_path.endswith(".svg"): content_type = "image/svg+xml"
-                
-                with open(file_path, "rb") as f:
-                    content = f.read()
-                self.send_response(200)
-                self._send_cors_headers()
-                self.send_header("Content-Type", content_type)
-                self.send_header("Content-Length", str(len(content)))
-                self.end_headers()
-                self.wfile.write(content)
-            else:
+            base_dir = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
+            file_path = os.path.abspath(os.path.join(base_dir, rel_path))
+
+            # Security: Strict boundary check prevents directory traversal attacks
+            try:
+                common = os.path.commonpath([base_dir, file_path])
+            except ValueError:
+                common = ""
+            if common != base_dir or not (os.path.exists(file_path) and os.path.isfile(file_path)):
                 self.send_response(404)
                 self._send_cors_headers()
                 self.end_headers()
                 self.wfile.write(b"Not found")
+                return
+
+            content_type = "text/html"
+            if file_path.endswith(".css"): content_type = "text/css"
+            elif file_path.endswith(".js"): content_type = "application/javascript"
+            elif file_path.endswith(".json"): content_type = "application/json"
+            elif file_path.endswith(".png"): content_type = "image/png"
+            elif file_path.endswith(".svg"): content_type = "image/svg+xml"
+            
+            with open(file_path, "rb") as f:
+                content = f.read()
+            self.send_response(200)
+            self._send_cors_headers()
+            self.send_header("Content-Type", content_type)
+            self.send_header("Content-Length", str(len(content)))
+            self.end_headers()
+            self.wfile.write(content)
 
     def do_POST(self):
         path = self._resolve_path()
@@ -316,7 +332,8 @@ class handler(BaseHTTPRequestHandler):
             for t, note in enumerate(melody):
                 pitch = note[0] if isinstance(note, (list, tuple)) else note.get("pitch", 60)
                 dur = note[1] if isinstance(note, (list, tuple)) else note.get("duration", 1.0)
-                prev_pitch = melody[t - 1][0] if t > 0 else pitch
+                prev_note = melody[t - 1] if t > 0 else note
+                prev_pitch = prev_note[0] if isinstance(prev_note, (list, tuple)) else prev_note.get("pitch", pitch)
 
                 alpha = math.pi / 4.0 if pitch < prev_pitch else 0.0
                 beta = math.pi / 8.0 if pitch >= 65 else -math.pi / 8.0
@@ -324,10 +341,23 @@ class handler(BaseHTTPRequestHandler):
                 sim = simulate_qiskit_circuit(alpha=alpha, beta=beta, shots=shots)
                 p = sim["probabilities"]
 
-                # Sample state
-                r = (hash((t, pitch, alpha, beta)) % 1000) / 1000.0
-                m0 = 1 if r > (p["00"] + p["01"]) else 0
-                m1 = 1 if (r % 0.5) > 0.25 else 0
+                # Sample state from exact quantum joint probability distribution
+                r = (hash((t, pitch, round(alpha, 3), round(beta, 3))) % 1000) / 1000.0
+                p00 = p.get("00", 0.0)
+                p01 = p00 + p.get("01", 0.0)
+                p10 = p01 + p.get("10", 0.0)
+
+                if r < p00:
+                    measured_state = "00"
+                elif r < p01:
+                    measured_state = "01"
+                elif r < p10:
+                    measured_state = "10"
+                else:
+                    measured_state = "11"
+
+                m0 = int(measured_state[0])
+                m1 = int(measured_state[1])
 
                 upper_p = pick_consonant(pitch, [7, 8, 9] if m0 == 1 else [4, 3, 5], scale_set)
                 lower_p = pick_consonant(pitch, [-12, -7, -8] if m1 == 1 else [-4, -3, -5], scale_set)
