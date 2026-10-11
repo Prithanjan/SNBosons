@@ -860,6 +860,7 @@ print("IonQ Aria-1 Counts:", counts)</pre>
                 if (btn.dataset.tab === 'tab-studio') {
                     resizeCanvases();
                     drawMidiGrid();
+                    if (!isPlaying) drawIdleScope();
                 }
             });
         });
