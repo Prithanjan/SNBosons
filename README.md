@@ -5,8 +5,12 @@
 [![Tests: 13 Passed](https://img.shields.io/badge/tests-13%20passed-brightgreen.svg)](tests/test_pipeline.py)
 [![IonQ Ready](https://img.shields.io/badge/IonQ-Trapped--Ion%20Compatible-purple.svg)](https://ionq.com/)
 [![CI Status](https://github.com/Prithanjan/SNBosons/actions/workflows/ci.yml/badge.svg)](https://github.com/Prithanjan/SNBosons/actions)
+[![Live on Vercel](https://img.shields.io/badge/Vercel-Live%20App-black?logo=vercel)](https://snbosons.vercel.app)
+[![How To Play](https://img.shields.io/badge/Guide-How%20To%20Play-orange.svg)](HOW_TO_PLAY.md)
 
 > **Algorithmic counterpoint driven by Bell-state non-locality and exact 11-qubit quantum state memory.**
+>
+> Live Web App: **[https://snbosons.vercel.app](https://snbosons.vercel.app)** | User Guide: **[HOW_TO_PLAY.md](HOW_TO_PLAY.md)**
 >
 > Encode melodies into orthogonal quantum basis states, decode them losslessly, generate entangled two-voice counterpoint violating the classical Bell-CHSH inequality ($S \approx 2.83$), and synthesize production-grade acoustic audio calibrated against rigorous classical controls.
 
