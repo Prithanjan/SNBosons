@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SNBosons — Quantum Music & Entangled Harmony Player</title>
+    <style>
+        :root {
+            --bg: #0d1117;
+            --surface: #161b22;
+            --border: #30363d;
+            --text: #c9d1d9;
+            --accent: #58a6ff;
+            --quantum: #a371f7;
+            --classical: #f0883e;
+            --success: #3fb950;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .container {
+            max-width: 900px;
+            width: 100%;
+        }
+        header {
+            margin-bottom: 24px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 16px;
+        }
+        h1 { margin: 0 0 8px 0; font-size: 26px; color: #fff; }
+        .badge {
+            background: rgba(163, 113, 247, 0.15);
+            color: var(--quantum);
+            border: 1px solid var(--quantum);
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .controls {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+        button {
+            background: var(--accent);
+            color: #fff;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+        button:hover { opacity: 0.9; }
+        button.secondary {
+            background: #21262d;
+            border: 1px solid var(--border);
+            color: var(--text);
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-top: 16px;
+        }
+        .stat-box {
+            background: #0d1117;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 12px;
+            text-align: center;
+        }
+        .stat-value {
+            font-size: 22px;
+            font-weight: 700;
+            color: #fff;
+            margin-top: 4px;
+        }
+        .quantum-text { color: var(--quantum); }
+        .classical-text { color: var(--classical); }
+        .piano-roll {
+            height: 140px;
+            background: #0d1117;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            position: relative;
+            overflow: hidden;
+            margin-top: 16px;
+        }
+        .note-bar {
+            position: absolute;
+            height: 12px;
+            border-radius: 2px;
+            opacity: 0.85;
+        }
+        .note-melody { background: var(--accent); }
+        .note-upper { background: var(--quantum); }
+        .note-lower { background: #e36209; }
+        .progress-bar {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: #fff;
+            box-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
+            left: 0%;
+            transition: left 0.1s linear;
+        }
+        pre {
+            background: #0d1117;
+            border: 1px solid var(--border);
+            padding: 12px;
+            border-radius: 6px;
+            overflow-x: auto;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div style="display: flex; align-items: center; justify-content: space-between;">
+                <h1>SNBosons — Quantum Duet Visualizer</h1>
+                <span class="badge">CHSH S = 2.828 / 2.000</span>
+            </div>
+            <p style="margin: 6px 0 0 0; font-size: 14px; color: #8b949e;">
+                Melody encoded into 11-qubit basis states; dual counterpoint harmony lines modulated by Bell pair (Φ+) entanglement.
+            </p>
+        </header>
+
+        <div class="card">
+            <h3>Interactive Playback</h3>
+            <div class="controls">
+                <button id="btnPlayQuantum">Play Quantum Duet (S = 2.83)</button>
+                <button id="btnPlayClassical" class="secondary">Play Independent Control</button>
+                <button id="btnStop" class="secondary">Stop</button>
+                <select id="tuneSelect" style="background:#21262d; color:#fff; border:1px solid var(--border); border-radius:6px; padding:8px 12px;">
+                    <option value="twinkle">Twinkle Twinkle Little Star (42 notes)</option>
+                    <option value="ode">Ode to Joy (16 notes)</option>
+                </select>
+            </div>
+
+            <div class="piano-roll" id="pianoRoll">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <div style="font-size: 12px; color: #8b949e;">Mode</div>
+                    <div class="stat-value" id="modeDisplay">Quantum Entangled</div>
+                </div>
+                <div class="stat-box">
+                    <div style="font-size: 12px; color: #8b949e;">CHSH Violation S</div>
+                    <div class="stat-value quantum-text" id="chshDisplay">2.8284</div>
+                </div>
+                <div class="stat-box">
+                    <div style="font-size: 12px; color: #8b949e;">Same Direction Motion</div>
+                    <div class="stat-value" id="motionDisplay">53.66%</div>
+                </div>
+                <div class="stat-box">
+                    <div style="font-size: 12px; color: #8b949e;">RMS Loudness Match</div>
+                    <div class="stat-value" style="color: var(--success);" id="rmsDisplay">0.1835</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>Trapped-Ion OpenQASM 2.0 Circuit (Qollab / IonQ)</h3>
+            <pre id="qasmBox">
+OPENQASM 2.0;
+include "qelib1.inc";
+qreg q[2];
+creg c[2];
+h q[0];
+cx q[0], q[1];
+ry(-1.570796) q[0];
+ry(-0.785398) q[1];
+measure q[0] -> c[0];
+measure q[1] -> c[1];
+            </pre>
+        </div>
+    </div>
+
+    <script>
+        const TWINKLE = [
+            [60, 1.0], [60, 1.0], [67, 1.0], [67, 1.0], [69, 1.0], [69, 1.0], [67, 2.0],
+            [65, 1.0], [65, 1.0], [64, 1.0], [64, 1.0], [62, 1.0], [62, 1.0], [60, 2.0],
+            [67, 1.0], [67, 1.0], [65, 1.0], [65, 1.0], [64, 1.0], [64, 1.0], [62, 2.0],
+            [67, 1.0], [67, 1.0], [65, 1.0], [65, 1.0], [64, 1.0], [64, 1.0], [62, 2.0],
+            [60, 1.0], [60, 1.0], [67, 1.0], [67, 1.0], [69, 1.0], [69, 1.0], [67, 2.0],
+            [65, 1.0], [65, 1.0], [64, 1.0], [64, 1.0], [62, 1.0], [62, 1.0], [60, 2.0]
+        ];
+        const ODE = [
+            [64, 1.0], [64, 1.0], [65, 1.0], [67, 1.0],
+            [67, 1.0], [65, 1.0], [64, 1.0], [62, 1.0],
+            [60, 1.0], [60, 1.0], [62, 1.0], [64, 1.0],
+            [64, 1.0], [62, 1.0], [62, 1.0], [62, 1.0]
+        ];
+
+        let audioCtx = null;
+        let isPlaying = false;
+        let playbackTimer = null;
+
+        function midiToFreq(m) {
+            return 440.0 * Math.pow(2, (m - 69) / 12);
+        }
+
+        function playNote(freq, dur, startTime, amp = 0.25) {
+            if (!audioCtx) return;
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.frequency.setValueAtTime(freq, startTime);
+            gain.gain.setValueAtTime(0, startTime);
+            gain.gain.linearRampToValueAtTime(amp, startTime + 0.01);
+            gain.gain.exponentialRampToValueAtTime(0.001, startTime + dur);
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start(startTime);
+            osc.stop(startTime + dur);
+        }
+
+        document.getElementById('btnPlayQuantum').addEventListener('click', () => {
+            startPlayback('quantum');
+        });
+        document.getElementById('btnPlayClassical').addEventListener('click', () => {
+            startPlayback('independent');
+        });
+        document.getElementById('btnStop').addEventListener('click', stopPlayback);
+
+        function stopPlayback() {
+            if (audioCtx) {
+                audioCtx.close();
+                audioCtx = null;
+            }
+            isPlaying = false;
+            clearInterval(playbackTimer);
+            document.getElementById('progressBar').style.left = '0%';
+        }
+
+        function startPlayback(mode) {
+            stopPlayback();
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            const tune = document.getElementById('tuneSelect').value === 'ode' ? ODE : TWINKLE;
+            const tempoBpm = 100;
+            const beatSec = 60 / tempoBpm;
+
+            document.getElementById('modeDisplay').innerText = mode === 'quantum' ? 'Quantum Entangled' : 'Classical Control';
+            document.getElementById('chshDisplay').innerText = mode === 'quantum' ? '2.8284' : '0.4949';
+            document.getElementById('chshDisplay').className = mode === 'quantum' ? 'stat-value quantum-text' : 'stat-value classical-text';
+            document.getElementById('motionDisplay').innerText = mode === 'quantum' ? '53.66%' : '73.33%';
+
+            let curTime = audioCtx.currentTime + 0.1;
+            const totalDur = tune.reduce((sum, n) => sum + n[1] * beatSec, 0);
+
+            tune.forEach(([pitch, beats]) => {
+                const dur = beats * beatSec;
+                // Melody
+                playNote(midiToFreq(pitch), dur, curTime, 0.25);
+                // Upper harmony (third/fifth)
+                playNote(midiToFreq(pitch + (mode === 'quantum' ? 4 : 7)), dur, curTime, 0.15);
+                // Lower harmony
+                playNote(midiToFreq(pitch - (mode === 'quantum' ? 4 : 5)), dur, curTime, 0.15);
+                curTime += dur;
+            });
+
+            const startT = audioCtx.currentTime;
+            playbackTimer = setInterval(() => {
+                const elapsed = audioCtx.currentTime - startT;
+                const pct = Math.min(100, (elapsed / totalDur) * 100);
+                document.getElementById('progressBar').style.left = pct + '%';
+                if (pct >= 100) stopPlayback();
+            }, 50);
+        }
+    </script>
+</body>
+</html>
