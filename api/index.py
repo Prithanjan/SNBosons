@@ -12,6 +12,7 @@ import math
 import os
 import urllib.request
 import urllib.error
+import urllib.parse
 from http.server import BaseHTTPRequestHandler
 
 # Try importing Qiskit
@@ -201,8 +202,30 @@ class handler(BaseHTTPRequestHandler):
         self._send_cors_headers()
         self.end_headers()
 
+    def _resolve_path(self):
+        parsed = urllib.parse.urlparse(self.path)
+        qs = urllib.parse.parse_qs(parsed.query)
+        if "endpoint" in qs and qs["endpoint"]:
+            ep = qs["endpoint"][0].strip("/").lower()
+            return f"/api/{ep}"
+
+        for h in ("x-forwarded-uri", "x-matched-path", "x-invoke-path"):
+            val = self.headers.get(h)
+            if val:
+                clean_val = val.split("?")[0].rstrip("/").lower()
+                if clean_val.startswith("/api"):
+                    return clean_val
+                return f"/api/{clean_val.lstrip('/')}"
+
+        clean_path = parsed.path.rstrip("/").lower()
+        for ep in ("simulate", "ionq", "qollab", "health"):
+            if clean_path.endswith(f"/{ep}") or clean_path.endswith(f"api/{ep}"):
+                return f"/api/{ep}"
+
+        return clean_path
+
     def do_GET(self):
-        path = self.path.split("?")[0].rstrip("/")
+        path = self._resolve_path()
         if path.startswith("/api"):
             if path in ("/api", "/api/health"):
                 response_data = {
@@ -236,7 +259,14 @@ class handler(BaseHTTPRequestHandler):
                 self.send_response(404)
                 self._send_cors_headers()
                 self.end_headers()
-                self.wfile.write(b'{"error": "API route not found"}')
+                debug_info = {
+                    "error": "API route not found",
+                    "path": self.path,
+                    "x-matched-path": self.headers.get("x-matched-path"),
+                    "x-invoke-path": self.headers.get("x-invoke-path"),
+                    "x-forwarded-uri": self.headers.get("x-forwarded-uri")
+                }
+                self.wfile.write(json.dumps(debug_info).encode("utf-8"))
         else:
             # Static file serving fallback for local dev
             rel_path = path.lstrip("/") or "index.html"
@@ -265,7 +295,7 @@ class handler(BaseHTTPRequestHandler):
                 self.wfile.write(b"Not found")
 
     def do_POST(self):
-        path = self.path.split("?")[0].rstrip("/")
+        path = self._resolve_path()
         content_length = int(self.headers.get("Content-Length", 0))
         raw_body = self.rfile.read(content_length) if content_length > 0 else b"{}"
 

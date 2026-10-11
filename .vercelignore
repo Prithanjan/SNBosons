@@ -1,0 +1,12 @@
+.venv
+venv
+ENV
+__pycache__
+*.pyc
+*.wav
+*.mp3
+.git
+.gitignore
+hook.md
+private
+tests

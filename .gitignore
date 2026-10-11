@@ -46,3 +46,5 @@ private/
 .idea/
 .vscode/
 *.swp
+
+.vercel
