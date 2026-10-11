@@ -2,68 +2,33 @@
 
 [![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Tests: 13 Passed](https://img.shields.io/badge/tests-13%20passed-brightgreen.svg)](tests/test_pipeline.py)
 
-SNBosons (`qsong`) is an algorithmic counterpoint pipeline coupling quantum information theory with strict acoustic calibration.
+SNBosons (`qsong`) is an algorithmic music and quantum information pipeline bridging quantum state manipulation with acoustic counterpoint. The system operates across two core stages:
 
----
+First, it implements an exact 11-qubit quantum memory round-trip. Monophonic melody notes are quantized onto a 16th-note grid, packed into pitch (7 bits) and duration (4 bits), and encoded into computational basis states using single-qubit Pauli-X gates. Projective measurement recovers the original melody with 100% deterministic fidelity ($P=1.0$), establishing lossless quantum state storage.
 
-## Verified vs. Unverified Status
+Second, it generates a two-voice counterpoint duet whose interval movements are governed by physical Bell state measurements. Melodic direction and register dynamically dictate measurement angles ($\alpha_t, \beta_t$). Under specific melodic contours, these angles align with the maximal Tsirelson violation of the CHSH inequality. Measurements on Bell pairs ($|\Phi^+\rangle = (|00\rangle + |11\rangle)/\sqrt{2}$) exhibit non-classical correlations ($S \approx 2.83$, exceeding the classical limit of 2.0). Outcomes dictate upper and lower voice shifts chosen from consonant intervals ({3, 4, 7, 8, 9} semitones in C major), strictly avoiding dissonant tritones.
 
-- **Verified:** 11-qubit basis state superposition encoding with exact deterministic decoding ($P=1.0 \pm 10^{-9}$), Bell state ($\Phi^+$) entanglement exhibiting CHSH parameter $S \approx 2.83$ (classical limit $2.0$), and consonance intervals restricted to $\{3, 4, 7, 8, 9\}$ semitones (0 tritones).
-- **Not Verified:** Audible quantum advantage, quantum speed-up, or aesthetic superiority ("better" music). Human listening tests remain pending.
+To test human perceptual discrimination, SNBosons renders quantum duets alongside independent classical controls using additive sine synthesis, backing triads, bass, and calibrated RMS loudness matching (<0.5% error). It includes an automated double-blind testing protocol with isolated answer keys, and supports both local NumPy statevector simulation and cloud execution on IonQ trapped-ion QPUs and Qollab.
 
----
-
-## Key Features
-
-1. **Exact 11-Qubit Basis Round Trip:** Maps pitch ($7$ bits) and 16th-note duration ($4$ bits) into computational basis states and recovers them with zero distortion.
-2. **Melody-Modulated Bell Measurement:** Extracts local contour angles ($\alpha_t \in \{0, \pi/4\}$) and register angles ($\beta_t \in \{\pm \pi/8\}$), measuring Bell pair $\Phi^+$ at maximal CHSH violation angles.
-3. **Consonant Counterpoint:** Generates upper and lower harmony lines strictly in-key without tritone dissonances.
-4. **Classical Control & Double-Blind Protocol:** Produces loudness-matched (RMS error $<0.5\%$) classical controls using independent random fair coins for rigorous blind listening tests.
-5. **Hardware & Qollab Ready:** Pure NumPy local statevector simulator + Qiskit / IonQ / OpenQASM compilation bridge.
+**Verification Boundary:** Superposition, entanglement, and CHSH violation ($S=2.83$) are verified. Audible quantum advantage, speed-up, and aesthetic superiority are not verified and remain pending human listening evaluation.
 
 ---
 
-## Directory Layout
+## Quickstart
 
-```
-SNBosons/
-├── docs/
-│   ├── PRD_quantum_song_roundtrip_duet.md   # Product specification
-│   ├── PRD_agents_quantum_song_duet.md      # Implementation specification
-│   ├── USER_FLOW.md                         # Pipeline and user flow diagrams
-│   └── IONQ_QOLLAB_DEPLOYMENT.md            # Hardware & cloud execution guide
-├── qsong/
-│   ├── __init__.py                          # Package exports
-│   ├── encode.py                            # 11-qubit basis encoder & decoder
-│   ├── measure.py                           # Bell state measurement & CHSH calculation
-│   ├── harmony.py                           # Melody settings & consonant voice rules
-│   ├── render.py                            # Additive synthesis, reverb & RMS matching
-│   ├── midi_io.py                           # Multi-channel MIDI generation
-│   ├── ionq_adapter.py                      # OpenQASM / Qiskit / IonQ bridge
-│   └── cli.py                              # Unified CLI
-├── tests/
-│   └── test_pipeline.py                     # 11 automated reference checks
-├── blind_trials/                            # Blind listening test audio pairs
-├── private/                                 # Protected keys (git-ignored)
-├── pyproject.toml
-└── requirements.txt
-```
-
----
-
-## Installation & Quickstart
-
+### 1. Install dependencies
 ```bash
 pip install -r requirements.txt
 ```
 
-### Run automated verification
+### 2. Run automated test suite
 ```bash
 pytest tests/test_pipeline.py -v
 ```
 
-### Run experiment
+### 3. Run experiment via CLI
 ```bash
-python -m qsong.cli run --seed 42 --mode quantum
+python -m qsong.cli run --mode quantum --seed 101 --wav output.wav --midi output.mid
 ```
