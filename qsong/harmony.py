@@ -33,6 +33,33 @@ ODE_TO_JOY: List[Tuple[int, float]] = [
 C_MAJOR_PITCH_CLASSES = {0, 2, 4, 5, 7, 9, 11}
 VALID_CONSONANT_INTERVALS = {3, 4, 7, 8, 9}
 
+PITCH_NAME_TO_INT = {
+    "C": 0, "B#": 0, "C#": 1, "DB": 1, "D": 2, "D#": 3, "EB": 3,
+    "E": 4, "F": 5, "E#": 5, "F#": 6, "GB": 6, "G": 7, "G#": 8,
+    "AB": 8, "A": 9, "A#": 10, "BB": 10, "B": 11, "CB": 11
+}
+
+MAJOR_INTERVALS = [0, 2, 4, 5, 7, 9, 11]
+NATURAL_MINOR_INTERVALS = [0, 2, 3, 5, 7, 8, 10]
+DORIAN_INTERVALS = [0, 2, 3, 5, 7, 9, 10]
+
+
+def get_scale_pitch_classes(root: str = "C", scale_type: str = "major") -> set:
+    """
+    Generate pitch class set for any musical key and scale:
+    root in {'C', 'C#', 'D', 'Eb', 'E', 'F', 'F#', 'G', 'Ab', 'A', 'Bb', 'B'}
+    scale_type in {'major', 'minor', 'dorian'}
+    """
+    root_int = PITCH_NAME_TO_INT.get(root.upper().strip(), 0)
+    st = scale_type.lower().strip()
+    if "minor" in st:
+        intervals = NATURAL_MINOR_INTERVALS
+    elif "dorian" in st:
+        intervals = DORIAN_INTERVALS
+    else:
+        intervals = MAJOR_INTERVALS
+    return {(root_int + interval) % 12 for interval in intervals}
+
 
 def settings(events: List[Tuple[int, int, int]]) -> Tuple[List[float], List[float]]:
     """
@@ -52,33 +79,43 @@ def settings(events: List[Tuple[int, int, int]]) -> Tuple[List[float], List[floa
     return alphas, betas
 
 
-def pick(pitch: int, options: List[int]) -> int:
+def pick(pitch: int, options: List[int], scale_pitch_classes: set = None) -> int:
     """
-    Pick first (pitch + offset) for offset in options where (pitch + offset) mod 12 is in C major.
+    Pick first (pitch + offset) for offset in options where (pitch + offset) mod 12 is in scale.
+    Defaults to C Major if scale_pitch_classes is None.
     """
+    if scale_pitch_classes is None:
+        scale_pitch_classes = C_MAJOR_PITCH_CLASSES
+
     for offset in options:
         candidate = pitch + offset
-        if candidate % 12 in C_MAJOR_PITCH_CLASSES:
+        if candidate % 12 in scale_pitch_classes:
             return candidate
-    raise ValueError(f"No valid consonant interval found for pitch {pitch} with options {options}")
+    raise ValueError(f"No valid consonant interval found for pitch {pitch} with options {options} in scale {scale_pitch_classes}")
 
 
 def duet_voices(
-    events: List[Tuple[int, int, int]], pairs: List[Tuple[int, int]]
+    events: List[Tuple[int, int, int]],
+    pairs: List[Tuple[int, int]],
+    scale_pitch_classes: set = None,
 ) -> Tuple[List[int], List[int]]:
     """
-    Derive upper and lower harmony voices given note events and measurement pairs (a_t, b_t):
+    Derive upper and lower harmony voices given note events, measurement pairs (a_t, b_t),
+    and target musical scale pitch classes:
     upper_t = pick(p_t, [7, 8, 9]) if a_t = +1 else pick(p_t, [4, 3])
     lower_t = pick(p_t, [-7, -8, -9]) if b_t = +1 else pick(p_t, [-4, -3])
     """
     if len(events) != len(pairs):
         raise ValueError(f"Mismatch in length: events ({len(events)}) vs pairs ({len(pairs)})")
 
+    if scale_pitch_classes is None:
+        scale_pitch_classes = C_MAJOR_PITCH_CLASSES
+
     upper = []
     lower = []
     for (p_t, _, _), (a_t, b_t) in zip(events, pairs):
-        u_t = pick(p_t, [7, 8, 9]) if a_t == +1 else pick(p_t, [4, 3])
-        l_t = pick(p_t, [-7, -8, -9]) if b_t == +1 else pick(p_t, [-4, -3])
+        u_t = pick(p_t, [7, 8, 9], scale_pitch_classes=scale_pitch_classes) if a_t == +1 else pick(p_t, [4, 3], scale_pitch_classes=scale_pitch_classes)
+        l_t = pick(p_t, [-7, -8, -9], scale_pitch_classes=scale_pitch_classes) if b_t == +1 else pick(p_t, [-4, -3], scale_pitch_classes=scale_pitch_classes)
 
         # Validate intervals
         diff_u = abs(u_t - p_t)

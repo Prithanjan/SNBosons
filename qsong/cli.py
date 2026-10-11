@@ -10,7 +10,7 @@ import os
 import numpy as np
 
 from .encode import events_from_tune, roundtrip_melody
-from .harmony import TWINKLE, settings, duet_voices
+from .harmony import TWINKLE, ODE_TO_JOY, settings, duet_voices, get_scale_pitch_classes
 from .measure import sample_bell_pair, sample_classical_pair
 from .render import render_mix, write_wav, measure_rms
 from .midi_io import write_midi
@@ -76,6 +76,8 @@ def run_experiment(
     seed: int = 42,
     mode: str = "quantum",
     add_reverb: bool = True,
+    key: str = "C",
+    scale: str = "major",
 ) -> Dict[str, Any]:
     """
     Run full experiment pipeline according to Section 6:
@@ -98,11 +100,13 @@ def run_experiment(
     else:
         raise ValueError(f"Unknown mode: {mode}")
 
+    scale_pcs = get_scale_pitch_classes(root=key, scale_type=scale)
+
     if mode == "original":
         upper = [p for p, _, _ in events]
         lower = [p for p, _, _ in events]
     else:
-        upper, lower = duet_voices(events, pairs)
+        upper, lower = duet_voices(events, pairs, scale_pitch_classes=scale_pcs)
 
     # Render audio mix
     mix = render_mix(events, upper, lower, mode=mode, add_reverb=add_reverb)
@@ -199,7 +203,8 @@ def main():
     # run command
     run_parser = subparsers.add_parser("run", help="Run experiment")
     run_parser.add_argument("--mode", choices=["quantum", "independent", "original"], default="quantum")
-    run_parser.add_argument("--seed", type=int, default=42)
+    run_parser.add_argument("--key", type=str, default="C", help="Musical key root (e.g. C, D, G, F, A)")
+    run_parser.add_argument("--scale", type=str, default="major", choices=["major", "minor", "dorian"], help="Scale type")
     run_parser.add_argument("--wav", type=str, default=None, help="Output WAV path")
     run_parser.add_argument("--midi", type=str, default=None, help="Output MIDI path")
     run_parser.add_argument("--json", type=str, default=None, help="Output metrics JSON path")
@@ -220,7 +225,7 @@ def main():
         print(f"Round trip exact on all {len(reconstructed)} notes of Twinkle Twinkle!")
 
     elif args.command == "run":
-        res = run_experiment(tune=TWINKLE, seed=args.seed, mode=args.mode)
+        res = run_experiment(tune=TWINKLE, seed=getattr(args, "seed", 42), mode=args.mode, key=args.key, scale=args.scale)
         metrics = {
             "mode": res["mode"],
             "seed": res["seed"],

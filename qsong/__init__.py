@@ -14,6 +14,7 @@ from .harmony import (
     TWINKLE,
     ODE_TO_JOY,
     C_MAJOR_PITCH_CLASSES,
+    get_scale_pitch_classes,
     pick,
     settings,
     duet_voices,
