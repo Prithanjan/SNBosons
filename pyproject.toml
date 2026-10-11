@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "qsong"
+version = "1.0.0"
+description = "Quantum Song Round Trip and Entangled Harmony Duet"
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = [
+    "numpy>=1.24.0",
+    "mido>=1.2.10",
+]
+
+[project.optional-dependencies]
+quantum = [
+    "qiskit>=1.0.0",
+    "qiskit-ionq>=0.5.0",
+]
+test = [
+    "pytest>=7.0.0",
+]
+
+[project.scripts]
+qsong = "qsong.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["qsong*"]
